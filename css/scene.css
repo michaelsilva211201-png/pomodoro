@@ -1,0 +1,124 @@
+/* Animações da cena. Controladas por #app:
+   data-mode (focus|short|long), data-final (none|minute|seconds), .running, .celebrating */
+
+/* Timer parado: tudo congela (menos a comemoração) */
+#app:not(.running):not(.celebrating),
+#app:not(.running):not(.celebrating) * { animation-play-state: paused !important; }
+
+/* Janela */
+.tree {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sway 3.2s ease-in-out infinite alternate;
+}
+.tree:nth-child(2n) { animation-delay: -1.1s; }
+.tree:nth-child(3n) { animation-delay: -2.3s; }
+@keyframes sway {
+  from { transform: rotate(-2.5deg); }
+  to { transform: rotate(2.5deg); }
+}
+
+/* Caneca */
+.steam-line {
+  opacity: 0;
+  transform-box: fill-box;
+  animation: steam 2.4s ease-in-out infinite;
+}
+.steam-line:nth-child(2) { animation-delay: -.8s; }
+.steam-line:nth-child(3) { animation-delay: -1.6s; }
+@keyframes steam {
+  0% { opacity: 0; transform: translateY(8px); }
+  40% { opacity: .9; }
+  100% { opacity: 0; transform: translateY(-16px); }
+}
+
+/* Ursinho: estado base */
+#bear-head { transform-origin: 420px 262px; }
+#yawn, #sweat { opacity: 0; }
+#sweat { transform-box: fill-box; }
+#laptop-screen { stroke: #bfe6ff; transition: stroke .6s ease; }
+#screen-glow { opacity: .22; transition: opacity .6s ease; }
+
+/* Foco: digitando */
+#app[data-mode="focus"] .arm { animation: type .34s ease-in-out infinite alternate; }
+#app[data-mode="focus"] .arm-r { animation-delay: -.17s; }
+#app[data-mode="focus"] #bear-head { animation: nod 1.6s ease-in-out infinite alternate; }
+@keyframes type {
+  from { transform: rotate(-3deg); }
+  to { transform: rotate(4deg); }
+}
+@keyframes nod {
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(2deg); }
+}
+
+/* Pausas: notebook apagado e espreguiçada */
+#app:is([data-mode="short"], [data-mode="long"]) #laptop-screen { stroke: #3b3f55; }
+#app:is([data-mode="short"], [data-mode="long"]) #screen-glow { opacity: 0; }
+#app:is([data-mode="short"], [data-mode="long"]) .arm-l { animation: stretch-l 5s ease-in-out infinite; }
+#app:is([data-mode="short"], [data-mode="long"]) .arm-r { animation: stretch-r 5s ease-in-out infinite; }
+@keyframes stretch-l {
+  0%, 35%, 100% { transform: rotate(0deg); }
+  50%, 70% { transform: rotate(196deg); }
+}
+@keyframes stretch-r {
+  0%, 35%, 100% { transform: rotate(0deg); }
+  50%, 70% { transform: rotate(-104deg); }
+}
+
+/* Reta final — foco: digita mais rápido e sua */
+#app[data-mode="focus"]:not([data-final="none"]) .arm { animation-duration: .15s; }
+#app[data-mode="focus"]:not([data-final="none"]) #sweat { animation: drip 1.1s ease-in infinite; }
+@keyframes drip {
+  0% { opacity: 0; transform: translateY(-4px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(16px); }
+}
+
+/* Reta final — pausa: boceja e olha para o notebook */
+#app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) #bear-mouth { opacity: 0; }
+#app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) #yawn { opacity: 1; }
+#app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) #bear-head { animation: look 3s ease-in-out infinite; }
+@keyframes look {
+  0%, 100% { transform: rotate(0deg); }
+  40%, 70% { transform: rotate(7deg); }
+}
+
+/* Reta final — barra do timer e moldura */
+#app:not([data-final="none"]) .time { animation: pulse 1s ease-in-out infinite; }
+#app:not([data-final="none"]) .mode-icon { animation: ring .6s ease-in-out infinite; }
+#app[data-final="seconds"] .screen { animation: blink 1s ease-in-out infinite; }
+@keyframes pulse { 50% { transform: scale(1.08); } }
+@keyframes ring {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(14deg); }
+}
+@keyframes blink {
+  50% {
+    box-shadow: 0 0 0 clamp(4px, 1vw, 12px) color-mix(in srgb, var(--mode) 45%, white),
+                var(--screen-shadow);
+  }
+}
+
+/* Comemoração ao fim do bloco */
+#app.celebrating .arm-l { transform: rotate(196deg); animation: cheer .35s ease-out; }
+#app.celebrating .arm-r { transform: rotate(-104deg); animation: cheer .35s ease-out; }
+#app.celebrating #bear { animation: hop .3s ease-in-out infinite alternate; }
+@keyframes cheer { from { transform: rotate(0deg); } }
+@keyframes hop { to { transform: translateY(-12px); } }
+
+.confetti-piece {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fall var(--dur, 1.4s) cubic-bezier(.3, .6, .6, 1) var(--delay, 0s) both;
+}
+@keyframes fall {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(var(--dx, 0px), 560px) rotate(var(--rot, 540deg)); }
+}
+
+/* Movimento reduzido: sem animações contínuas nem piscadas */
+@media (prefers-reduced-motion: reduce) {
+  #app, #app * { animation: none !important; transition: none !important; }
+}

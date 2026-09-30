@@ -36,7 +36,7 @@ export function createTimer(initialSettings, saved = null, now = () => Date.now(
   const running = () => endsAt !== null;
   const remaining = () => (running() ? Math.max(0, endsAt - now()) : remainingMs);
 
-  function advance() {
+  function advance(startAt = now()) {
     if (mode === 'focus') {
       focusCount += 1;
       mode = focusCount >= settings.cyclesBeforeLong ? 'long' : 'short';
@@ -46,7 +46,7 @@ export function createTimer(initialSettings, saved = null, now = () => Date.now(
     }
     durationMs = durationFor(mode, settings);
     remainingMs = durationMs;
-    endsAt = settings.autoStart ? now() + durationMs : null;
+    endsAt = settings.autoStart ? startAt + durationMs : null;
   }
 
   return {
@@ -67,7 +67,7 @@ export function createTimer(initialSettings, saved = null, now = () => Date.now(
     },
     tick() {
       if (!running() || remaining() > 0) return false;
-      advance();
+      advance(endsAt); // encadeia do fim real, mesmo que o tick tenha atrasado
       return true;
     },
     getState() {

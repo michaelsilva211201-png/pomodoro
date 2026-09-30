@@ -161,3 +161,29 @@ test('finalStretchLevel: blocos menores que 5 min usam os últimos 20%', () => {
   eq(finalStretchLevel(24_000, 2 * MIN), 'minute');
   eq(finalStretchLevel(9_000, 2 * MIN), 'seconds');
 });
+
+test('timer: com autoStart o próximo bloco encadeia do fim anterior, não da detecção', () => {
+  const now = fakeClock();
+  const t = createTimer(cfg({ autoStart: true }), null, now);
+  t.start();
+  now.advance(25 * MIN + 5_000); // tick atrasado (aba em segundo plano)
+  eq(t.tick(), true);
+  eq(t.getState().remainingMs, 5 * MIN - 5_000);
+  eq(t.getState().running, true);
+});
+
+test('timer: pular da pausa longa zera o ciclo', () => {
+  const t = createTimer(cfg({ cyclesBeforeLong: 1 }), null, fakeClock());
+  t.skip();
+  eq([t.getState().mode, t.getState().focusCount], ['long', 1]);
+  t.skip();
+  eq([t.getState().mode, t.getState().focusCount], ['focus', 0]);
+});
+
+test('timer: reduzir cyclesBeforeLong no meio do ciclo limita focusCount', () => {
+  const t = createTimer(cfg(), null, fakeClock());
+  t.skip(); t.skip(); t.skip();
+  eq([t.getState().mode, t.getState().focusCount], ['short', 2]);
+  t.updateSettings(cfg({ cyclesBeforeLong: 1 }));
+  eq(t.getState().focusCount, 1);
+});

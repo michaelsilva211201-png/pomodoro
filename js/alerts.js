@@ -21,6 +21,7 @@ const MELODIES = {
 export function playEnd(endedMode, volume) {
   try {
     if (!ctx || volume <= 0) return;
+    if (ctx.state !== 'running') ctx.resume().catch(() => {});
     const notes = endedMode === 'focus' ? MELODIES.focus : MELODIES.break;
     const t0 = ctx.currentTime + 0.05;
     const peak = (volume / 100) * 0.3;

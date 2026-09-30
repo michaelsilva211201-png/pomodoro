@@ -100,7 +100,10 @@ els.toggle.addEventListener('click', () => {
 
 els.reset.addEventListener('click', () => {
   const st = timer.getState();
-  if (st.remainingMs < st.durationMs && !confirm('Reiniciar o bloco atual?')) return;
+  if (st.remainingMs < st.durationMs) {
+    if (!confirm('Reiniciar o bloco atual?')) return;
+    if (timer.getState().mode !== st.mode) return; // o bloco acabou com o diálogo aberto
+  }
   timer.reset();
   persist();
   render();
@@ -127,6 +130,7 @@ function fillForm(s) {
   const f = els.form.elements;
   for (const key of NUMBER_FIELDS) f[key].value = s[key];
   for (const key of BOOL_FIELDS) f[key].checked = s[key];
+  f.notifications.checked = s.notifications && ('Notification' in window) && Notification.permission === 'granted';
   els.notifHint.hidden = true;
 }
 
@@ -166,4 +170,18 @@ els.dialog.addEventListener('close', () => {
 window.addEventListener('pagehide', persist);
 
 render();
-setInterval(onTick, 250);
+
+// Worker dedicado não sofre a limitação agressiva de timers de abas em segundo plano.
+function startTicker() {
+  try {
+    const worker = new Worker(new URL('./ticker.js', import.meta.url));
+    worker.addEventListener('message', onTick);
+    worker.addEventListener('error', () => {
+      worker.terminate();
+      setInterval(onTick, 250);
+    });
+  } catch {
+    setInterval(onTick, 250);
+  }
+}
+startTicker();

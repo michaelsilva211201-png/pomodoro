@@ -104,7 +104,8 @@
 /* Comemoração ao fim do bloco */
 #app.celebrating .arm-l { transform: rotate(196deg); animation: cheer .35s ease-out; }
 #app.celebrating .arm-r { transform: rotate(-104deg); animation: cheer .35s ease-out; }
-#app.celebrating #bear { animation: hop .3s ease-in-out infinite alternate; }
+#app.celebrating #bear,
+#app.celebrating #arms { animation: hop .3s ease-in-out infinite alternate; }
 @keyframes cheer { from { transform: rotate(0deg); } }
 @keyframes hop { to { transform: translateY(-12px); } }
 

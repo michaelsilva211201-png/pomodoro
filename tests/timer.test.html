@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testes – Pomodoro</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 24px; background: #fff8ee; color: #2b1b17; }
+    .ok { color: #1b7a3a; }
+    .fail { color: #b3261e; }
+    li { margin: 2px 0; }
+    pre { white-space: pre-wrap; margin: 0 0 0 1.5em; }
+  </style>
+</head>
+<body>
+  <h1 id="summary">Rodando…</h1>
+  <ul id="results"></ul>
+  <script type="module">
+    import { run } from './runner.js';
+    import './all.js';
+
+    const results = await run();
+    const list = document.getElementById('results');
+    for (const r of results) {
+      const li = document.createElement('li');
+      li.className = r.ok ? 'ok' : 'fail';
+      li.textContent = `${r.ok ? '✔' : '✘'} ${r.name}`;
+      if (!r.ok) {
+        const pre = document.createElement('pre');
+        pre.textContent = r.error;
+        li.append(pre);
+      }
+      list.append(li);
+    }
+    const failed = results.filter((r) => !r.ok).length;
+    const summary = `${results.length - failed}/${results.length} testes passaram`;
+    const heading = document.getElementById('summary');
+    heading.textContent = summary;
+    heading.className = failed ? 'fail' : 'ok';
+    document.title = `${failed ? 'FALHOU' : 'OK'} – ${summary}`;
+  </script>
+</body>
+</html>

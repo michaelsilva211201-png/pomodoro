@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pomodoro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="app" data-mode="focus" data-final="none">
+    <div class="stage">
+      <div class="screen">
+        <svg class="scene" viewBox="0 0 1000 500" role="img"
+             aria-label="Ursinho de fone de ouvido trabalhando na escrivaninha de um quarto aconchegante">
+          <defs>
+            <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop id="sky-top" offset="0" stop-color="#7ec8f0"/>
+              <stop id="sky-bottom" offset="1" stop-color="#cdeefd"/>
+            </linearGradient>
+            <clipPath id="window-clip"><rect x="400" y="70" width="280" height="160" rx="6"/></clipPath>
+          </defs>
+
+          <g stroke="#2b1b17" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+            <!-- Parede de madeira -->
+            <rect x="0" y="0" width="1000" height="500" fill="#7a5443" stroke="none"/>
+            <path d="M70 0V400M140 0V400M210 0V400M280 0V400M350 0V400M420 0V400M490 0V400M560 0V400M630 0V400M700 0V400M770 0V400M840 0V400M910 0V400"
+                  stroke="#65443a" stroke-width="4"/>
+
+            <!-- Chão -->
+            <path d="M-10 385Q500 345 1010 385V510H-10Z" fill="#4a3029"/>
+            <path d="M80 470Q500 440 920 470" fill="none" stroke="#3a241f" stroke-width="4"/>
+
+            <!-- Janela -->
+            <g id="window">
+              <g clip-path="url(#window-clip)">
+                <rect x="400" y="70" width="280" height="160" fill="url(#sky-grad)" stroke="none"/>
+                <g id="stars" opacity="0" fill="#fff8d6" stroke="none">
+                  <circle cx="425" cy="92" r="2.5"/>
+                  <circle cx="462" cy="130" r="2"/>
+                  <circle cx="515" cy="86" r="3"/>
+                  <circle cx="548" cy="120" r="2"/>
+                  <circle cx="592" cy="95" r="2.5"/>
+                  <circle cx="640" cy="128" r="2"/>
+                  <circle cx="662" cy="86" r="3"/>
+                </g>
+                <circle id="sun" cx="610" cy="110" r="22" fill="#ffd54a" stroke="#f2a93b" stroke-width="4"/>
+                <path id="moon" opacity="0" d="M470 88a20 20 0 1 0 22 26a16 16 0 1 1-22-26z" fill="#fff3c4" stroke="none"/>
+                <g id="trees" stroke-width="4">
+                  <path class="tree" d="M405 240L430 160L455 240Z" fill="#2f6b4f"/>
+                  <path class="tree" d="M440 240L470 140L500 240Z" fill="#3a7d5c"/>
+                  <path class="tree" d="M485 240L512 165L539 240Z" fill="#2f6b4f"/>
+                  <path class="tree" d="M525 240L558 135L591 240Z" fill="#3a7d5c"/>
+                  <path class="tree" d="M575 240L602 160L629 240Z" fill="#2f6b4f"/>
+                  <path class="tree" d="M612 240L642 145L672 240Z" fill="#3a7d5c"/>
+                  <path class="tree" d="M655 240L680 170L705 240Z" fill="#2f6b4f"/>
+                </g>
+              </g>
+              <rect x="400" y="70" width="280" height="160" rx="6" fill="none" stroke-width="9"/>
+              <rect x="388" y="228" width="304" height="16" rx="4" fill="#9b6b4f"/>
+            </g>
+
+            <!-- Quadro de tomate -->
+            <g id="poster">
+              <path d="M178 95L205 75L232 95" fill="none" stroke-width="3"/>
+              <circle cx="205" cy="75" r="4" fill="#2b1b17" stroke="none"/>
+              <rect x="150" y="95" width="110" height="135" rx="4" fill="#f4ead5"/>
+              <circle cx="205" cy="172" r="34" fill="#e8553e"/>
+              <path d="M205 138V126" stroke-width="4"/>
+              <path d="M190 140Q205 128 220 140Q212 146 205 144Q198 146 190 140Z" fill="#5fae5a" stroke-width="4"/>
+              <path d="M188 162Q192 152 202 152" fill="none" stroke="#fff" stroke-width="4" opacity=".7"/>
+            </g>
+
+            <!-- Estante -->
+            <g id="shelf">
+              <rect x="775" y="100" width="18" height="60" fill="#e07a5f"/>
+              <rect x="795" y="95" width="16" height="65" fill="#3d5a80"/>
+              <rect x="813" y="108" width="20" height="52" fill="#f2cc8f"/>
+              <rect x="835" y="104" width="14" height="56" fill="#81b29a"/>
+              <path d="M883 135Q865 115 877 101Q885 115 883 135Z" fill="#5fae5a" stroke-width="4"/>
+              <path d="M883 135Q899 113 887 97Q877 113 883 135Z" fill="#4c9a4f" stroke-width="4"/>
+              <path d="M868 160L864 135H902L898 160Z" fill="#c9824f"/>
+              <rect x="760" y="160" width="160" height="14" rx="3" fill="#9b6b4f"/>
+            </g>
+
+            <!-- Cadeira (base aparece sob a mesa) -->
+            <g id="chair">
+              <path d="M420 400V452" stroke-width="8"/>
+              <path d="M380 458H460" stroke-width="8"/>
+              <circle cx="384" cy="466" r="7" fill="#2b1b17"/>
+              <circle cx="456" cy="466" r="7" fill="#2b1b17"/>
+            </g>
+
+            <!-- Ursinho -->
+            <g id="bear">
+              <ellipse cx="420" cy="305" rx="74" ry="70" fill="#a0714f"/>
+              <ellipse cx="420" cy="318" rx="42" ry="36" fill="#e7c39a" stroke="none"/>
+              <g id="bear-head">
+                <circle cx="370" cy="160" r="21" fill="#a0714f"/>
+                <circle cx="370" cy="160" r="10" fill="#e7c39a" stroke="none"/>
+                <circle cx="470" cy="160" r="21" fill="#a0714f"/>
+                <circle cx="470" cy="160" r="10" fill="#e7c39a" stroke="none"/>
+                <circle cx="420" cy="205" r="60" fill="#a0714f"/>
+                <ellipse cx="428" cy="226" rx="27" ry="19" fill="#e7c39a"/>
+                <ellipse cx="432" cy="214" rx="9" ry="6.5" fill="#2b1b17" stroke="none"/>
+                <circle cx="400" cy="198" r="5.5" fill="#2b1b17" stroke="none"/>
+                <circle cx="452" cy="198" r="5.5" fill="#2b1b17" stroke="none"/>
+                <circle cx="402" cy="196" r="1.8" fill="#fff" stroke="none"/>
+                <circle cx="454" cy="196" r="1.8" fill="#fff" stroke="none"/>
+                <ellipse cx="386" cy="222" rx="9" ry="5" fill="#f2a3a3" opacity=".7" stroke="none"/>
+                <ellipse cx="470" cy="222" rx="9" ry="5" fill="#f2a3a3" opacity=".7" stroke="none"/>
+                <path id="bear-mouth" d="M422 234q6 6 12 0" fill="none" stroke-width="4"/>
+                <ellipse id="yawn" cx="428" cy="238" rx="7" ry="9" fill="#7a2e2e" stroke-width="4"/>
+                <path d="M356 205A64 64 0 0 1 484 205" fill="none" stroke-width="16"/>
+                <path d="M356 205A64 64 0 0 1 484 205" fill="none" stroke="#6fae7a" stroke-width="8"/>
+                <rect x="344" y="186" width="22" height="40" rx="9" fill="#6fae7a"/>
+                <rect x="474" y="186" width="22" height="40" rx="9" fill="#6fae7a"/>
+                <path id="sweat" d="M492 168q-9 14 0 19q9-5 0-19z" fill="#8fd3ff" stroke-width="3"/>
+              </g>
+            </g>
+            <path id="screen-glow" d="M545 245L470 200V300L545 322Z" fill="#bfe6ff" stroke="none"/>
+
+            <!-- Luminária -->
+            <g id="lamp">
+              <ellipse cx="268" cy="327" rx="24" ry="7" fill="#d9c7a8"/>
+              <path d="M268 322L252 272L292 240" fill="none" stroke-width="7"/>
+              <path d="M284 226L328 244L306 270Z" fill="#e0b25a"/>
+            </g>
+
+            <!-- Escrivaninha -->
+            <g id="desk">
+              <rect x="268" y="354" width="464" height="46" fill="#5d5f64"/>
+              <rect x="250" y="354" width="18" height="110" fill="#6d6f74"/>
+              <rect x="732" y="354" width="18" height="110" fill="#6d6f74"/>
+              <rect x="220" y="330" width="560" height="24" rx="4" fill="#8d8f94"/>
+            </g>
+
+            <!-- Papéis e base do notebook (sob as patas) -->
+            <path d="M388 326L468 322L474 330L384 333Z" fill="#fdfaf2"/>
+            <path d="M498 322H662L670 333H490Z" fill="#9aa0a8"/>
+
+            <!-- Braços: cada .arm gira em torno do ombro (origem local 0,0) -->
+            <g transform="translate(375 268) rotate(-45.5)">
+              <g class="arm arm-l">
+                <rect x="-16" y="-8" width="32" height="88" rx="16" fill="#a0714f"/>
+                <circle cx="0" cy="78" r="16" fill="#e7c39a"/>
+              </g>
+            </g>
+            <g transform="translate(465 268) rotate(-45.5)">
+              <g class="arm arm-r">
+                <rect x="-16" y="-8" width="32" height="88" rx="16" fill="#a0714f"/>
+                <circle cx="0" cy="78" r="16" fill="#e7c39a"/>
+              </g>
+            </g>
+
+            <!-- Tampa do notebook (vista de trás) -->
+            <g id="laptop">
+              <path d="M548 324L566 238H660L644 324Z" fill="#c9ccd3"/>
+              <path id="laptop-screen" d="M552 318L568 244" fill="none" stroke-width="6"/>
+              <circle cx="607" cy="282" r="13" fill="#e8553e" stroke-width="4"/>
+              <path d="M600 270q7-7 14 0" fill="#5fae5a" stroke-width="3"/>
+            </g>
+
+            <!-- Caneca com vapor -->
+            <g id="mug">
+              <path d="M716 300q18 0 18 12t-18 12" fill="none" stroke-width="6"/>
+              <path d="M680 292H716V322a8 8 0 0 1-8 8H688a8 8 0 0 1-8-8Z" fill="#f4f1ea"/>
+              <path d="M686 304h24" stroke="#e8553e" stroke-width="4"/>
+              <g id="steam" fill="none" stroke="#fff8ee" stroke-width="4">
+                <path class="steam-line" d="M688 282q-7-10 0-20t0-20"/>
+                <path class="steam-line" d="M698 282q-7-10 0-20t0-20"/>
+                <path class="steam-line" d="M708 282q-7-10 0-20t0-20"/>
+              </g>
+            </g>
+
+            <!-- Porta-lápis -->
+            <g id="pencils">
+              <path d="M744 298L736 268" stroke="#e8553e" stroke-width="6"/>
+              <path d="M752 298V264" stroke="#f2cc8f" stroke-width="6"/>
+              <path d="M760 298L768 270" stroke="#81b29a" stroke-width="6"/>
+              <rect x="734" y="294" width="32" height="36" rx="5" fill="#6c8ebf"/>
+            </g>
+
+            <!-- Lixeira -->
+            <g id="trash">
+              <circle cx="872" cy="392" r="10" fill="#f4f1ea"/>
+              <path d="M850 398H910L902 470H858Z" fill="#8a8f96"/>
+              <path d="M866 410L869 460M880 410V460M894 410L891 460" stroke-width="3"/>
+            </g>
+
+            <!-- Comemoração (preenchido por scene.js) -->
+            <g id="confetti" stroke="none"></g>
+          </g>
+        </svg>
+
+        <button id="open-settings" class="settings-btn" type="button" aria-label="Configurações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <circle cx="12" cy="12" r="6.5"/>
+            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hud">
+        <div class="timer-bar">
+          <span class="mode-icon" aria-hidden="true">
+            <svg class="icon icon-focus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M5 4 2.5 6.5M19 4l2.5 2.5"/>
+            </svg>
+            <svg class="icon icon-short" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 9h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c0 1.5 1.5 1.5 1.5 3M11.5 3.5c0 1.5 1.5 1.5 1.5 3"/>
+            </svg>
+            <svg class="icon icon-long" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>
+            </svg>
+          </span>
+          <span id="time" class="time">25:00</span>
+          <button id="toggle" class="ctrl ctrl-toggle" type="button" data-state="paused" aria-label="Iniciar">
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+          </button>
+          <button id="reset" class="ctrl ctrl-reset" type="button" aria-label="Reiniciar bloco">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg>
+          </button>
+          <button id="skip" class="ctrl ctrl-skip" type="button" aria-label="Pular para o próximo bloco">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l8 6-8 6z" fill="currentColor"/><path d="M17 6v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div id="cycles" class="cycles" role="img" aria-label="Progresso do ciclo"></div>
+        <input id="activity" class="activity" type="text" maxlength="80" autocomplete="off"
+               placeholder="No que você vai focar?" aria-label="Atividade">
+      </div>
+    </div>
+
+    <dialog id="settings" aria-labelledby="settings-title">
+      <form id="settings-form" method="dialog" novalidate>
+        <h2 id="settings-title">Configurações</h2>
+        <label class="field">Foco (min) <input name="focusMin" type="number" min="1" max="120" inputmode="numeric"></label>
+        <label class="field">Pausa curta (min) <input name="shortMin" type="number" min="1" max="60" inputmode="numeric"></label>
+        <label class="field">Pausa longa (min) <input name="longMin" type="number" min="1" max="60" inputmode="numeric"></label>
+        <label class="field">Focos até a pausa longa <input name="cyclesBeforeLong" type="number" min="1" max="12" inputmode="numeric"></label>
+        <label class="field">Iniciar próximo automaticamente <input name="autoStart" type="checkbox"></label>
+        <label class="field">Som <input name="sound" type="checkbox"></label>
+        <label class="field">Volume <input name="volume" type="range" min="0" max="100"></label>
+        <label class="field">Notificações <input name="notifications" type="checkbox"></label>
+        <p id="notif-hint" class="hint" hidden>O navegador não permitiu notificações.</p>
+        <div class="actions">
+          <button type="submit" value="cancel">Cancelar</button>
+          <button type="submit" value="save" class="primary">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+  </main>
+</body>
+</html>

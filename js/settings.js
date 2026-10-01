@@ -1,5 +1,6 @@
 export const SETTINGS_KEY = 'pomodoro.settings';
 export const STATE_KEY = 'pomodoro.state';
+export const LOCATION_KEY = 'pomodoro.location';
 
 export const DEFAULTS = Object.freeze({
   focusMin: 25,
@@ -86,4 +87,23 @@ export function loadState(storage = defaultStorage()) {
 
 export function saveState(state, storage = defaultStorage()) {
   write(STATE_KEY, state, storage);
+}
+
+// Localização para o céu: só fica neste navegador, arredondada a ~1 km.
+const round2 = (n) => Math.round(n * 100) / 100;
+
+function validLocation(loc) {
+  if (!loc || typeof loc !== 'object' || Array.isArray(loc)) return null;
+  const { lat, lon } = loc;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
+  return { lat: round2(lat), lon: round2(lon) };
+}
+
+export function loadLocation(storage = defaultStorage()) {
+  return validLocation(read(LOCATION_KEY, storage));
+}
+
+export function saveLocation(loc, storage = defaultStorage()) {
+  const valid = validLocation(loc);
+  if (valid) write(LOCATION_KEY, valid, storage);
 }

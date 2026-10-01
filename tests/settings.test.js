@@ -1,6 +1,6 @@
 import { test, eq } from './runner.js';
 import {
-  DEFAULTS, SETTINGS_KEY, STATE_KEY,
+  DEFAULTS, SETTINGS_KEY, STATE_KEY, LOCATION_KEY, loadLocation, saveLocation,
   validate, loadSettings, saveSettings, loadState, saveState,
 } from '../js/settings.js';
 
@@ -71,4 +71,15 @@ test('settings: estado salvo vai e volta; formatos errados viram null', () => {
   st.setItem(STATE_KEY, '5');
   eq(loadState(st), null);
   eq(loadState(memoryStorage()), null);
+});
+
+test('settings: localização salva é arredondada e validada', () => {
+  const st = memoryStorage();
+  eq(loadLocation(st), null);
+  saveLocation({ lat: -23.55052, lon: -46.633308 }, st);
+  eq(loadLocation(st), { lat: -23.55, lon: -46.63 });
+  for (const bad of [{ lat: 91, lon: 0 }, { lat: 0, lon: 181 }, { lat: 'x', lon: 0 }, [1, 2], 5]) {
+    st.setItem(LOCATION_KEY, JSON.stringify(bad));
+    eq(loadLocation(st), null, JSON.stringify(bad));
+  }
 });

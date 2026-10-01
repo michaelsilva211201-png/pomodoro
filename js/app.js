@@ -1,8 +1,11 @@
 import { createTimer, finalStretchLevel } from './timer.js';
-import { loadSettings, saveSettings, loadState, saveState, validate } from './settings.js';
+import { loadSettings, saveSettings, loadState, saveState, validate, loadLocation, saveLocation } from './settings.js';
 import { unlockAudio, playEnd, notify, requestPermission } from './alerts.js';
 import { createScene } from './scene.js';
 import { iconSvg, paintIcons } from './icons.js';
+import { sunTimes } from './sun.js';
+import { skyAtTime } from './sky.js';
+import { requestLocation } from './location.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
@@ -24,6 +27,9 @@ const els = {
   dialog: $('settings'),
   form: $('settings-form'),
   notifHint: $('notif-hint'),
+  skyInfo: $('sky-info'),
+  useLocation: $('use-location'),
+  locationHint: $('location-hint'),
 };
 
 let settings = loadSettings();
@@ -33,6 +39,39 @@ const scene = createScene(root);
 let activity = typeof saved?.activity === 'string' ? saved.activity.slice(0, 80) : '';
 let celebrating = false;
 let lastSaveAt = 0;
+let place = loadLocation(); // null → horário padrão 6h–18h
+let sunCache = { key: '', times: null };
+
+// Nascer/pôr do sol de hoje (recalcula quando muda o dia ou a localização).
+function todaySunTimes(nowMs) {
+  const d = new Date(nowMs);
+  const key = `${d.toDateString()}|${place ? `${place.lat},${place.lon}` : 'padrão'}`;
+  if (key !== sunCache.key) {
+    const at = (h) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h).getTime();
+    sunCache = { key, times: place ? sunTimes(at(12), place.lat, place.lon) : { sunrise: at(6), sunset: at(18) } };
+  }
+  return sunCache.times;
+}
+
+const clock = (ms) => new Date(ms).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+function describeSky() {
+  const times = todaySunTimes(Date.now());
+  const source = place ? 'Sua localização' : 'Horário padrão';
+  if (times.polar === 'day') return `${source} · sol da meia-noite`;
+  if (times.polar === 'night') return `${source} · noite polar`;
+  return `${source} · nascer ${clock(times.sunrise)} · pôr ${clock(times.sunset)}`;
+}
+
+async function refreshLocation() {
+  const found = await requestLocation();
+  if (found) {
+    saveLocation(found);
+    place = loadLocation();
+  }
+  els.skyInfo.textContent = describeSky();
+  return Boolean(found);
+}
 
 function format(ms) {
   const total = Math.ceil(ms / 1000);
@@ -64,10 +103,11 @@ function render() {
   els.toggle.dataset.state = st.running ? 'running' : 'paused';
   els.toggle.setAttribute('aria-label', st.running ? 'Pausar' : 'Iniciar');
   renderCycles(st.focusCount);
+  const now = Date.now();
+  scene.setSky(skyAtTime(now, todaySunTimes(now)));
   if (celebrating) return; // a cena termina a comemoração no modo antigo
   scene.setMode(st.mode);
   scene.setRunning(st.running);
-  scene.setProgress(1 - st.remainingMs / st.durationMs);
   scene.setFinalStretch(finalStretchLevel(st.remainingMs, st.durationMs));
 }
 
@@ -134,6 +174,8 @@ function fillForm(s) {
   for (const key of BOOL_FIELDS) f[key].checked = s[key];
   f.notifications.checked = s.notifications && ('Notification' in window) && Notification.permission === 'granted';
   els.notifHint.hidden = true;
+  els.locationHint.hidden = true;
+  els.skyInfo.textContent = describeSky();
 }
 
 function readForm() {
@@ -159,6 +201,11 @@ els.form.elements.notifications.addEventListener('change', async (e) => {
   }
 });
 
+els.useLocation.addEventListener('click', async () => {
+  els.locationHint.hidden = true;
+  if (!(await refreshLocation())) els.locationHint.hidden = false;
+});
+
 els.dialog.addEventListener('close', () => {
   if (els.dialog.returnValue !== 'save') return;
   unlockAudio();
@@ -171,6 +218,7 @@ els.dialog.addEventListener('close', () => {
 
 window.addEventListener('pagehide', persist);
 
+if (!place) refreshLocation(); // primeira vez: o navegador pergunta se pode usar a localização
 render();
 
 // Worker dedicado não sofre a limitação agressiva de timers de abas em segundo plano.

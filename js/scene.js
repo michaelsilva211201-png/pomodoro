@@ -1,4 +1,3 @@
-import { skyAt } from './sky.js';
 import { renderScene } from './world.js';
 import { SCENE_W } from './art.js';
 
@@ -38,7 +37,7 @@ export function createScene(root) {
   const shade = svg.querySelector('#night-shade');
   const nightLayers = [svg.querySelector('#stars'), svg.querySelector('#moon')];
   const confetti = svg.querySelector('#confetti');
-  let lastProgress = -1;
+  let lastSky = '';
 
   return {
     setMode(mode) {
@@ -47,15 +46,17 @@ export function createScene(root) {
     setRunning(running) {
       root.classList.toggle('running', running);
     },
-    setProgress(fraction) {
-      if (Math.abs(fraction - lastProgress) < 0.001) return;
-      lastProgress = fraction;
-      const sky = skyAt(fraction);
+    // sky: resultado de skyAtTime() — cores, posição do sol e quanto é noite.
+    setSky(sky) {
+      const key = `${sky.top}|${sky.sunX.toFixed(3)}|${sky.night.toFixed(2)}`;
+      if (key === lastSky) return;
+      lastSky = key;
       skyTop.setAttribute('stop-color', sky.top);
       skyBottom.setAttribute('stop-color', sky.bottom);
       // Sol 12×12: arco do horizonte esquerdo ao direito; no horizonte fica meio escondido atrás da grama.
+      // O topo do arco (y≈34) fica logo abaixo da barra do timer, acima do telhado.
       const cx = 10 + sky.sunX * (SCENE_W - 20);
-      const cy = 124 - sky.sunHeight * 108;
+      const cy = 124 - sky.sunHeight * 90;
       sun.setAttribute('transform', `translate(${Math.round(cx - 6)} ${Math.round(cy - 6)})`);
       sun.setAttribute('opacity', (1 - sky.night).toFixed(2));
       clouds.setAttribute('opacity', (1 - sky.night).toFixed(2));

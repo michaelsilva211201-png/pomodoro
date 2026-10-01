@@ -70,8 +70,8 @@ Desenho original (não copiar arte de terceiros): parede de madeira, janela com 
 - **Pausa (curta e longa)**: ursinho se espreguiçando / tomando café; tela do notebook apagada.
 - **Timer parado (pausado ou não iniciado)**: todas as animações congeladas (`animation-play-state: paused`).
 
-### Céu da janela
-O céu varia com a fração decorrida do bloco atual: dia (0%) → pôr do sol (~60%) → noite com estrelas (~90–100%). Interpolação contínua de cores. Cada bloco novo recomeça no dia.
+### Céu (horário real)
+O céu acompanha o horário real: o sol faz um arco do nascer ao pôr do sol de hoje, com ~1 h de céu alaranjado em volta de cada um, e à noite aparecem lua e estrelas (a casa escurece e as tochas iluminam). O nascer e o pôr do sol são calculados (algoritmo simplificado da NOAA, `js/sun.js`) pela localização do navegador, pedida na primeira abertura e guardada só localmente, arredondada a ~1 km (`pomodoro.location`). Sem localização, usa 6h–18h. Sol da meia-noite / noite polar mantêm dia ou noite contínuos. O céu atualiza mesmo com o timer pausado. O painel ⚙ mostra a origem e os horários do dia, com o botão "Usar minha localização".
 
 ### Reta final
 - **Último minuto** (ou últimos 20% do bloco, se o bloco for menor que 5 min): números do timer pulsam; ícone do modo balança como despertador.

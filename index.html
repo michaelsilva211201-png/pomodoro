@@ -43,10 +43,12 @@
             <span data-icon="skip"></span>
           </button>
         </div>
-        <div id="cycles" class="cycles panel" role="img" aria-label="Progresso do ciclo"></div>
-        <input id="activity" class="activity panel" type="text" maxlength="80" autocomplete="off"
-               placeholder="No que você vai focar?" aria-label="Atividade">
       </div>
+
+      <div id="cycles" class="cycles panel" role="img" aria-label="Progresso do ciclo"></div>
+
+      <input id="activity" class="activity panel" type="text" maxlength="80" autocomplete="off"
+             placeholder="No que você vai focar?" aria-label="Atividade">
     </div>
 
     <dialog id="settings" class="panel" aria-labelledby="settings-title">
@@ -61,6 +63,12 @@
         <label class="field">Volume <input name="volume" type="range" min="0" max="100"></label>
         <label class="field">Notificações <input name="notifications" type="checkbox"></label>
         <p id="notif-hint" class="hint" hidden>O navegador não permitiu notificações.</p>
+        <div class="sky-row">
+          <span>Céu no horário real</span>
+          <small id="sky-info" class="sky-info"></small>
+          <button id="use-location" type="button" class="slot">Usar minha localização</button>
+          <p id="location-hint" class="hint" hidden>Não foi possível obter a localização. Usando 6h–18h.</p>
+        </div>
         <div class="actions">
           <button type="submit" value="cancel" class="slot">Cancelar</button>
           <button type="submit" value="save" class="slot primary">Salvar</button>

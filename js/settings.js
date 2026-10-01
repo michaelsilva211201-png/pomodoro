@@ -11,6 +11,8 @@ export const DEFAULTS = Object.freeze({
   sound: true,
   volume: 70,
   notifications: false,
+  musicMode: 'focus', // 'focus' (só no foco) | 'always' (foco e pausas) | 'off'
+  musicVolume: 40,
 });
 
 const LIMITS = {
@@ -19,6 +21,11 @@ const LIMITS = {
   longMin: [1, 60],
   cyclesBeforeLong: [1, 12],
   volume: [0, 100],
+  musicVolume: [0, 100],
+};
+
+const CHOICES = {
+  musicMode: ['focus', 'always', 'off'],
 };
 
 function toNumber(value) {
@@ -34,6 +41,10 @@ export function validate(input) {
     const value = src[key];
     if (typeof fallback === 'boolean') {
       out[key] = typeof value === 'boolean' ? value : fallback;
+      continue;
+    }
+    if (typeof fallback === 'string') {
+      out[key] = CHOICES[key].includes(value) ? value : fallback;
       continue;
     }
     const n = toNumber(value);

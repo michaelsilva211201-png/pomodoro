@@ -24,6 +24,7 @@
 
       <!-- HUD no layout do jogo: corações e comida, nível (tempo), barra de experiência e hotbar de 9 slots -->
       <div class="hud">
+        <div id="now-playing" class="now-playing" aria-live="polite" hidden></div>
         <div class="status">
           <div id="cycles" class="cycles" role="img" aria-label="Progresso do ciclo"></div>
           <div id="hunger" class="hunger" role="img" aria-label="Andamento da pausa"></div>
@@ -72,6 +73,15 @@
         <label class="field">Som <input name="sound" type="checkbox"></label>
         <label class="field">Volume <input name="volume" type="range" min="0" max="100"></label>
         <label class="field">Notificações <input name="notifications" type="checkbox"></label>
+        <label class="field">Música
+          <select name="musicMode">
+            <option value="focus">Só no foco</option>
+            <option value="always">Foco e pausas</option>
+            <option value="off">Desligada</option>
+          </select>
+        </label>
+        <label class="field">Volume da música <input name="musicVolume" type="range" min="0" max="100"></label>
+        <small id="music-info" class="sky-info"></small>
         <p id="notif-hint" class="hint" hidden>O navegador não permitiu notificações.</p>
         <div class="sky-row">
           <span>Céu no horário real</span>

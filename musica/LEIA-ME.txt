@@ -1,0 +1,12 @@
+MÚSICA DE FUNDO DO POMODORO
+===========================
+
+Coloque nesta pasta os arquivos de música que você quer ouvir
+(MP3, OGG, M4A, WAV, FLAC, WEBM ou OPUS).
+
+- O app toca todos em sequência, em ordem alfabética, e volta ao início no fim.
+- Para trocar, adicione ou apague arquivos e recarregue a página.
+- No painel "Opções..." você escolhe quando tocar (só no foco, foco e pausas
+  ou desligada) e o volume da música.
+- Os arquivos desta pasta não vão para o Git (só este LEIA-ME).
+- Funciona com o servidor "python -m http.server", que lista a pasta para o app.

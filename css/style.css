@@ -98,6 +98,21 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
   font-size: clamp(14px, 2.6cqw, 32px);
 }
 
+/* "Tocando agora": texto que muda de cor, como o aviso da jukebox */
+.now-playing {
+  margin-bottom: .1em;
+  font-size: .62em;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: .1em .1em 0 #3f3f3f;
+  animation: jukebox 1.2s steps(6) infinite;
+}
+.now-playing[hidden] { display: none; }
+@keyframes jukebox {
+  0% { color: #ff5555; } 17% { color: #ffaa00; } 33% { color: #ffff55; }
+  50% { color: #55ff55; } 67% { color: #55ffff; } 83% { color: #ff55ff; } 100% { color: #ff5555; }
+}
+
 .status { display: flex; justify-content: space-between; align-items: end; }
 .cycles, .hunger { display: flex; gap: .06em; filter: drop-shadow(.06em .06em 0 rgba(0, 0, 0, .45)); }
 .hunger { flex-direction: row-reverse; } /* a comida esvazia da esquerda para a direita, como no jogo */
@@ -234,6 +249,14 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; }
   width: 4.5em;
   padding: 4px 8px;
   font: inherit;
+  color: #fff;
+  background: #000;
+  border: 2px solid #a0a0a0;
+}
+.field select {
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 15px;
   color: #fff;
   background: #000;
   border: 2px solid #a0a0a0;

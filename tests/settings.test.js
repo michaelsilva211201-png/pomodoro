@@ -83,3 +83,11 @@ test('settings: localização salva é arredondada e validada', () => {
     eq(loadLocation(st), null, JSON.stringify(bad));
   }
 });
+
+test('settings: música tem modo e volume próprios, com valores inválidos voltando ao padrão', () => {
+  eq([DEFAULTS.musicMode, DEFAULTS.musicVolume], ['focus', 40]);
+  const s = validate({ musicMode: 'always', musicVolume: 150 });
+  eq([s.musicMode, s.musicVolume], ['always', 100]);
+  eq(validate({ musicMode: 'rock' }).musicMode, 'focus');
+  eq(validate({ musicMode: 3 }).musicMode, 'focus');
+});

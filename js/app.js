@@ -7,6 +7,7 @@ import { sunTimes } from './sun.js';
 import { skyAtTime } from './sky.js';
 import { requestLocation } from './location.js';
 import { moonPhaseIndex } from './moon.js';
+import { loadTracks, createMusicPlayer, shouldPlayMusic } from './music.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
@@ -15,7 +16,7 @@ const HEART_EMPTY = iconSvg('heartEmpty');
 const FOOD = iconSvg('drumstick');
 const FOOD_EMPTY = iconSvg('drumstickEmpty');
 const FOOD_SLOTS = 10;
-const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume'];
+const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume', 'musicVolume'];
 const BOOL_FIELDS = ['autoStart', 'sound', 'notifications'];
 
 const $ = (id) => document.getElementById(id);
@@ -29,6 +30,8 @@ const els = {
   cycles: $('cycles'),
   xp: $('xp'),
   hunger: $('hunger'),
+  nowPlaying: $('now-playing'),
+  musicInfo: $('music-info'),
   activity: $('activity'),
   openSettings: $('open-settings'),
   dialog: $('settings'),
@@ -48,6 +51,22 @@ let celebrating = false;
 let lastSaveAt = 0;
 let place = loadLocation(); // null → horário padrão 6h–18h
 let sunCache = { key: '', times: null };
+let music = null; // criado quando a lista da pasta musica/ termina de carregar
+let nowPlayingTimer = null;
+
+// Como o aviso de disco tocando no jogo: aparece alguns segundos acima da hotbar.
+function showNowPlaying(track) {
+  els.nowPlaying.textContent = `Tocando agora: ${track.name}`;
+  els.nowPlaying.hidden = false;
+  clearTimeout(nowPlayingTimer);
+  nowPlayingTimer = setTimeout(() => { els.nowPlaying.hidden = true; }, 4000);
+}
+
+function describeMusic() {
+  if (!music) return 'Procurando músicas na pasta musica/…';
+  if (!music.count) return 'Nenhuma música encontrada. Coloque arquivos (MP3, OGG…) em pomodoro/musica/.';
+  return `${music.count} ${music.count === 1 ? 'música' : 'músicas'} na pasta musica/`;
+}
 
 // Nascer/pôr do sol de hoje (recalcula quando muda o dia ou a localização).
 function todaySunTimes(nowMs) {
@@ -134,6 +153,7 @@ function render() {
   const now = Date.now();
   scene.setSky(skyAtTime(now, todaySunTimes(now)));
   scene.setMoonPhase(moonPhaseIndex(now));
+  music?.setPlaying(shouldPlayMusic(st, settings.musicMode));
   if (celebrating) return; // a cena termina a comemoração no modo antigo
   scene.setMode(st.mode);
   scene.setRunning(st.running);
@@ -205,6 +225,8 @@ function fillForm(s) {
   els.notifHint.hidden = true;
   els.locationHint.hidden = true;
   els.skyInfo.textContent = describeSky();
+  f.musicMode.value = s.musicMode;
+  els.musicInfo.textContent = describeMusic();
 }
 
 function readForm() {
@@ -212,6 +234,7 @@ function readForm() {
   const values = {};
   for (const key of NUMBER_FIELDS) values[key] = f[key].value;
   for (const key of BOOL_FIELDS) values[key] = f[key].checked;
+  values.musicMode = f.musicMode.value;
   return validate(values);
 }
 
@@ -241,11 +264,19 @@ els.dialog.addEventListener('close', () => {
   settings = readForm();
   saveSettings(settings);
   timer.updateSettings(settings);
+  music?.setVolume(settings.musicVolume / 100);
   persist();
   render();
 });
 
 window.addEventListener('pagehide', persist);
+
+loadTracks().then((tracks) => {
+  music = createMusicPlayer(tracks, { onTrackStart: showNowPlaying });
+  music.setVolume(settings.musicVolume / 100);
+  els.musicInfo.textContent = describeMusic();
+  render();
+});
 
 if (!place) refreshLocation(); // primeira vez: o navegador pergunta se pode usar a localização
 render();

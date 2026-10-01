@@ -14,10 +14,8 @@ function defs() {
       <stop id="sky-top" offset="0" stop-color="#78a7ff"/>
       <stop id="sky-bottom" offset="1" stop-color="#c0d8ff"/>
     </linearGradient>
-    <radialGradient id="torch-glow">
-      <stop offset="0" stop-color="#ffc066" stop-opacity="1"/>
-      <stop offset=".5" stop-color="#ffb347" stop-opacity=".45"/>
-      <stop offset="1" stop-color="#ffb347" stop-opacity="0"/>
+    <radialGradient id="torch-glow">${[[0, 0.3, 0.6], [0.3, 0.55, 0.38], [0.55, 0.8, 0.18], [0.8, 1, 0]]
+      .map(([from, to, o]) => `<stop offset="${from}" stop-color="#ffc066" stop-opacity="${o}"/><stop offset="${to}" stop-color="#ffc066" stop-opacity="${o}"/>`).join('')}
     </radialGradient>
     ${patterns.join('')}
     <g id="spr-orb">${draw('orb')}</g>
@@ -35,7 +33,8 @@ function decor() {
   const L = LAYOUT;
   return [
     ...L.tufts.map((pos) => draw('tuft', ...pos)),
-    ...L.flowers.map((pos) => draw('flower', ...pos)),
+    ...L.poppies.map((pos) => draw('poppy', ...pos)),
+    ...L.dandelions.map((pos) => draw('dandelion', ...pos)),
     ...['door', 'bed', 'stair', 'craftingTable', 'furnace', 'chest'].map((name) => draw(name, ...L[name])),
     at(L.fire, frames(draw('fireA'), draw('fireB')), ' class="fire"'),
     ...L.torches.map((pos) => draw('torchStick', ...pos)),
@@ -65,27 +64,40 @@ function player() {
   </g>`;
 }
 
+// Sombra suave nos cantos internos da casa (ambient occlusion).
+function shadows() {
+  return `<g id="shadows" fill="#000">${LAYOUT.shadows
+    .map(([x, y, w, h, o]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" opacity="${o}"/>`).join('')}</g>`;
+}
+
 function torches() {
+  const smoke = [0, 1, 2].map((i) => `<g class="smoke">${draw('smoke', 1 + (i % 2), 0)}</g>`).join('');
   return LAYOUT.torches.map(([x, y]) =>
-    `<circle class="glow" cx="${x + 2}" cy="${y + 2}" r="24" fill="url(#torch-glow)"/>` +
-    at([x, y], frames(draw('flameA'), draw('flameB')), ' class="flame"')).join('');
+    `<circle class="glow" cx="${x + 2}" cy="${y + 2}" r="28" fill="url(#torch-glow)"/>` +
+    at([x, y], frames(draw('flameA'), draw('flameB')) + at([0, -1], smoke), ' class="flame"')).join('');
+}
+
+// As 8 fases da lua; o CSS mostra só a do dia (atributo data-phase em #moon).
+function moonPhases() {
+  return Array.from({ length: 8 }, (_, i) => `<g class="moon-phase" data-phase="${i}">${draw(`moon${i}`)}</g>`).join('');
 }
 
 export function renderScene() {
   const stars = STARS.map(([x, y], i) =>
     `<rect x="${x}" y="${y}" width="${i % 3 === 0 ? 2 : 1}" height="${i % 3 === 0 ? 2 : 1}" fill="#fff8d6"/>`).join('');
-  const clouds = LAYOUT.clouds.map(([x, y, w]) => `<g class="cloud">${drawArt(cloud(w), x, y)}</g>`).join('');
+  const clouds = LAYOUT.clouds.map(([x, y, w], i) => `<g class="cloud">${drawArt(cloud(w, 90 + i), x, y)}</g>`).join('');
   return [
     defs(),
     `<rect width="${SCENE_W}" height="${SCENE_H}" fill="url(#sky-grad)"/>`,
-    `<g id="sun">${draw('sun')}</g>`,
+    `<g id="sun">${draw('sunHalo', -5, -5)}${draw('sun')}</g>`,
     `<g id="clouds">${clouds}</g>`,
     world(),
     decor(),
+    shadows(),
     player(),
     `<rect id="night-shade" width="${SCENE_W}" height="${SCENE_H}" fill="#060a24" opacity="0"/>`,
     `<g id="stars" opacity="0">${stars}</g>`,
-    at(LAYOUT.moon, draw('moon'), ' id="moon" opacity="0"'),
+    at(LAYOUT.moon, moonPhases(), ' id="moon" opacity="0" data-phase="4"'),
     torches(),
     '<g id="confetti"></g>',
   ].join('');

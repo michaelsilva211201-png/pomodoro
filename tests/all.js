@@ -4,3 +4,4 @@ import './sky.test.js';
 import './sun.test.js';
 import './pixel.test.js';
 import './art.test.js';
+import './moon.test.js';

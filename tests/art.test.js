@@ -1,5 +1,6 @@
 import { test, eq } from './runner.js';
 import { TILES, SPRITES, BLOCK, buildMap, SCENE_W, SCENE_H } from '../js/art.js';
+import { ICONS } from '../js/icons.js';
 
 const unknownChars = (art) => {
   const bad = new Set();
@@ -7,8 +8,8 @@ const unknownChars = (art) => {
   return [...bad];
 };
 
-test('arte: todo pixel dos blocos e sprites usa uma cor da paleta', () => {
-  for (const [name, art] of [...Object.entries(TILES), ...Object.entries(SPRITES)]) {
+test('arte: todo pixel dos blocos, sprites e ícones usa uma cor da paleta', () => {
+  for (const [name, art] of [...Object.entries(TILES), ...Object.entries(SPRITES), ...Object.entries(ICONS)]) {
     eq(unknownChars(art), [], name);
   }
 });

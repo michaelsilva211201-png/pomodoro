@@ -23,6 +23,22 @@
   100% { transform: translateX(0); }
 }
 
+/* Fase da lua: só a do dia aparece */
+.moon-phase { display: none; }
+#moon[data-phase="0"] [data-phase="0"], #moon[data-phase="1"] [data-phase="1"],
+#moon[data-phase="2"] [data-phase="2"], #moon[data-phase="3"] [data-phase="3"],
+#moon[data-phase="4"] [data-phase="4"], #moon[data-phase="5"] [data-phase="5"],
+#moon[data-phase="6"] [data-phase="6"], #moon[data-phase="7"] [data-phase="7"] { display: inline; }
+
+/* Fumaça subindo das tochas */
+.smoke { opacity: 0; animation: smoke 2.4s steps(6) infinite; }
+.smoke:nth-child(2) { animation-delay: -.8s; }
+.smoke:nth-child(3) { animation-delay: -1.6s; }
+@keyframes smoke {
+  0% { opacity: .8; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(1px, -10px); }
+}
+
 /* Fogo da fornalha */
 .fire { --frame: .4s; }
 

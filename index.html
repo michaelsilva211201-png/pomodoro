@@ -4,9 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pomodoro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Silkscreen:wght@700&display=swap">
+  <link rel="preload" href="fonts/Monocraft.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/scene.css">
   <script type="module" src="js/app.js"></script>
@@ -18,14 +16,19 @@
         <!-- Cena montada por js/scene.js a partir de js/art.js -->
         <svg class="scene" viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" role="img"
              aria-label="Casa de blocos em pixel art com um personagem trabalhando na mesa de trabalho"></svg>
+        <div class="vignette" aria-hidden="true"></div>
 
-        <button id="open-settings" class="settings-btn mc-btn" type="button" aria-label="Configurações">
-          <span data-icon="gear"></span>
-        </button>
+        <button id="open-settings" class="settings-btn mc-btn" type="button">Opções...</button>
+
       </div>
 
+      <!-- HUD no layout do jogo: corações e comida, nível (tempo), barra de experiência e hotbar de 9 slots -->
       <div class="hud">
-        <div id="cycles" class="cycles" role="img" aria-label="Progresso do ciclo"></div>
+        <div class="status">
+          <div id="cycles" class="cycles" role="img" aria-label="Progresso do ciclo"></div>
+          <div id="hunger" class="hunger" role="img" aria-label="Andamento da pausa"></div>
+        </div>
+        <span id="time" class="time">25:00</span>
         <div id="xp" class="xp" role="progressbar" aria-label="Progresso do bloco" aria-valuemin="0" aria-valuemax="100"><div class="xp-fill"></div></div>
         <div class="timer-bar hotbar">
           <span class="mode-icon hotbar-slot selected" aria-hidden="true">
@@ -33,23 +36,29 @@
             <span class="icon icon-short" data-icon="bread"></span>
             <span class="icon icon-long" data-icon="bed"></span>
           </span>
-          <span id="time" class="time">25:00</span>
-          <button id="toggle" class="ctrl ctrl-toggle mc-btn" type="button" data-state="paused" aria-label="Iniciar">
+          <button id="toggle" class="ctrl ctrl-toggle hotbar-slot" type="button" data-state="paused" aria-label="Iniciar">
             <span class="i-play" data-icon="play"></span>
             <span class="i-pause" data-icon="pause"></span>
           </button>
-          <button id="reset" class="ctrl ctrl-reset mc-btn" type="button" aria-label="Reiniciar bloco">
+          <button id="reset" class="ctrl ctrl-reset hotbar-slot" type="button" aria-label="Reiniciar bloco">
             <span data-icon="stop"></span>
           </button>
-          <button id="skip" class="ctrl ctrl-skip mc-btn" type="button" aria-label="Pular para o próximo bloco">
+          <button id="skip" class="ctrl ctrl-skip hotbar-slot" type="button" aria-label="Pular para o próximo bloco">
             <span data-icon="skip"></span>
           </button>
+          <span class="hotbar-slot deco" aria-hidden="true"><span data-icon="sword"></span></span>
+          <span class="hotbar-slot deco" aria-hidden="true"><span data-icon="apple"></span></span>
+          <span class="hotbar-slot deco" aria-hidden="true"><span data-icon="torch"></span></span>
+          <span class="hotbar-slot deco" aria-hidden="true"><span data-icon="book"></span></span>
+          <span class="hotbar-slot deco" aria-hidden="true"><span data-icon="grass"></span></span>
         </div>
       </div>
 
-
-      <input id="activity" class="activity chat" type="text" maxlength="80" autocomplete="off"
-             placeholder="No que você vai focar?" aria-label="Atividade">
+      <label class="chat">
+        <span class="chat-name">&lt;Você&gt;</span>
+        <input id="activity" class="activity" type="text" maxlength="80" autocomplete="off"
+               placeholder="qual a tarefa?" aria-label="Atividade">
+      </label>
     </div>
 
     <dialog id="settings" class="panel" aria-labelledby="settings-title">

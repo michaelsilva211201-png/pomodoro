@@ -1,7 +1,7 @@
 import { spriteRects, rectsToSvg } from './pixel.js';
 
 // Ícones da interface em pixel art. Cada um vira um <svg> com shape-rendering="crispEdges".
-const ICONS = {
+export const ICONS = {
   pickaxe: { // picareta: cabeça em arco, cabo na diagonal
     palette: { k: '#1e1e1e', m: '#c9d1da', M: '#7d8794', n: '#8a5a2b', N: '#5e3c1b' },
     rows: [
@@ -120,6 +120,107 @@ const ICONS = {
       '..mmMMmm..',
       '.m.mmmm.m.',
       '....mm....',
+    ],
+  },
+  sword: {
+    palette: { k: '#1e1e1e', w: '#e8e8e8', W: '#a8a8a8', n: '#8a5a2b', y: '#c8a03a' },
+    rows: [
+      '........kk',
+      '.......kwk',
+      '......kwWk',
+      '.....kwWk.',
+      '....kwWk..',
+      '.k.kwWk...',
+      '.kykWk....',
+      '..kyk.....',
+      '.knkyk....',
+      'kkk..k....',
+    ],
+  },
+  apple: {
+    palette: { k: '#2a0a0a', r: '#d42a2a', R: '#9a1414', w: '#ff8a8a', n: '#5e3c1b', g: '#4f8a2f' },
+    rows: [
+      '.....n.g..',
+      '.....ngg..',
+      '..kkknkk..',
+      '.krwrrrrk.',
+      'krwrrrrrRk',
+      'krrrrrrrRk',
+      'krrrrrrRRk',
+      '.krrrrRRk.',
+      '..kRRRRk..',
+      '...kkkk...',
+    ],
+  },
+  torch: {
+    palette: { y: '#ffe066', o: '#ff9a2a', n: '#8a5a2b', N: '#6b4423' },
+    rows: [
+      '....yy....',
+      '...yooy...',
+      '...yooy...',
+      '....nN....',
+      '....nN....',
+      '....nN....',
+      '....nN....',
+      '....nN....',
+      '....nN....',
+      '....nN....',
+    ],
+  },
+  book: {
+    palette: { k: '#1e1010', r: '#8a2a1a', R: '#6a1a10', w: '#f0e8d0', y: '#c8a03a' },
+    rows: [
+      '..........',
+      '.kkkkkkkk.',
+      '.krrrrrrwk',
+      '.kryyyyrwk',
+      '.krrrrrrwk',
+      '.krrrrrrwk',
+      '.kRRRRRRwk',
+      '.kkkkkkkk.',
+      '..........',
+      '..........',
+    ],
+  },
+  grass: { // bloco de grama em miniatura
+    palette: { g: '#6fa944', G: '#4f8a2f', d: '#866043', D: '#6c4a32' },
+    rows: [
+      'gGgggGgggg',
+      'ggggGgggGg',
+      'gGdgggdgGg',
+      'ddGdddddgd',
+      'dddDdddDdd',
+      'dDdddDdddd',
+      'ddddDddddD',
+      'dDdddddDdd',
+      'ddddDddddd',
+      'dddddDdddD',
+    ],
+  },
+  drumstick: { // comida cheia
+    palette: { k: '#1e0e04', m: '#c8742a', M: '#9a4a14', l: '#e8a050', w: '#f0f0e0' },
+    rows: [
+      '...kkkk.',
+      '..kllmmk',
+      '.klmmmMk',
+      '.kmmmMMk',
+      '.kmMMMk.',
+      'kwkkkk..',
+      'kwk.....',
+      '.k......',
+    ],
+  },
+  drumstickEmpty: { // comida vazia: só o contorno
+    palette: { k: '#1e0e04', e: '#3a2a1e' },
+    rows: [
+      '...kkkk.',
+      '..keeeek',
+      '.keeeeek',
+      '.keeeeek',
+      '.keeeek.',
+      'kekkkk..',
+      'kek.....',
+      '.k......',
     ],
   },
   heart: { // coração cheio

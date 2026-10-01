@@ -35,7 +35,8 @@ export function createScene(root) {
   const sun = svg.querySelector('#sun');
   const clouds = svg.querySelector('#clouds');
   const shade = svg.querySelector('#night-shade');
-  const nightLayers = [svg.querySelector('#stars'), svg.querySelector('#moon')];
+  const moon = svg.querySelector('#moon');
+  const nightLayers = [svg.querySelector('#stars'), moon];
   const confetti = svg.querySelector('#confetti');
   let lastSky = '';
 
@@ -64,6 +65,9 @@ export function createScene(root) {
       shade.setAttribute('opacity', (sky.night * 0.45).toFixed(2));
       for (const layer of nightLayers) layer.setAttribute('opacity', sky.night.toFixed(2));
       root.style.setProperty('--night', sky.night.toFixed(2));
+    },
+    setMoonPhase(index) {
+      moon.dataset.phase = String(index);
     },
     setFinalStretch(level) {
       root.dataset.final = level;

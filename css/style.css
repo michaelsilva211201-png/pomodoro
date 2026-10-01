@@ -1,3 +1,10 @@
+/* Monocraft: fonte livre (SIL OFL 1.1) inspirada na dos jogos de blocos — fonts/Monocraft-LICENSE.txt */
+@font-face {
+  font-family: "Monocraft";
+  src: url("../fonts/Monocraft.ttf") format("truetype");
+  font-display: swap;
+}
+
 :root {
   --focus: #d8604f;
   --short: #4f9d69;
@@ -18,7 +25,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
 body {
-  font-family: "Pixelify Sans", ui-monospace, "Consolas", monospace;
+  font-family: "Monocraft", ui-monospace, "Consolas", monospace;
   background: var(--ink);
   color: var(--text);
 }
@@ -26,7 +33,7 @@ button { font: inherit; color: inherit; }
 svg[shape-rendering] { display: block; image-rendering: pixelated; }
 
 /* Texto branco com sombra cinza deslocada */
-.mc-btn, .time, .chat { text-shadow: .1em .1em 0 var(--text-shadow); }
+.mc-btn, .chat { text-shadow: .1em .1em 0 var(--text-shadow); }
 
 .mc-btn {
   display: grid;
@@ -71,72 +78,53 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
   background: #78a7ff;
 }
 .scene { display: block; width: 100%; height: 100%; }
+.vignette { /* leve escurecimento nas bordas, como nos gráficos "fancy" do jogo */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .28) 100%);
+}
 
-/* HUD embaixo, sobre a terra (como no jogo): corações, barra de experiência e hotbar */
+/* HUD embaixo, sobre a terra, no layout do jogo */
 .hud {
   position: absolute;
-  bottom: 2cqw;
+  bottom: 1.4cqw;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: .5cqw;
-  width: max-content;
-  max-width: 100%;
+  gap: .18em;
+  font-size: clamp(14px, 2.6cqw, 32px);
 }
 
-.hotbar {
-  display: flex;
-  align-items: center;
-  gap: .25em;
-  padding: .18em;
-  font-size: clamp(18px, 3.2cqw, 40px);
-  background: rgba(0, 0, 0, .45);
-  border: 2px solid #000;
-  box-shadow: inset 0 0 0 2px #8b8b8b;
-}
-.hotbar-slot {
-  display: grid;
-  place-items: center;
-  width: 1.3em;
-  height: 1.3em;
-  padding: .18em;
-  background: rgba(139, 139, 139, .35);
-  border: 2px solid #373737;
-}
-.hotbar-slot.selected { border-color: #fff; box-shadow: 0 0 0 2px #000; }
+.status { display: flex; justify-content: space-between; align-items: end; }
+.cycles, .hunger { display: flex; gap: .06em; filter: drop-shadow(.06em .06em 0 rgba(0, 0, 0, .45)); }
+.hunger { flex-direction: row-reverse; } /* a comida esvazia da esquerda para a direita, como no jogo */
+.cycle, .food { display: block; width: .78em; height: .78em; }
+.cycle svg, .food svg { width: 100%; height: 100%; }
 
-.mode-icon .icon { display: none; width: 100%; height: 100%; }
-#app[data-mode="focus"] .icon-focus,
-#app[data-mode="short"] .icon-short,
-#app[data-mode="long"] .icon-long { display: block; }
-
+/* Tempo como o número verde do nível de experiência */
 .time {
-  display: inline-block;
-  min-width: 3.4em;
-  padding: 0 .1em;
-  font-family: "Silkscreen", "Pixelify Sans", monospace; /* dígitos mais legíveis que os da Pixelify */
-  font-size: .82em;
+  position: relative;
+  z-index: 1;
+  margin-bottom: -.38em;
+  font-family: "Monocraft", monospace;
+  font-size: 1.1em;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #80ff20;
   text-align: center;
+  font-variant-numeric: tabular-nums;
+  text-shadow: .07em 0 0 #000, -.07em 0 0 #000, 0 .07em 0 #000, 0 -.07em 0 #000, .1em .1em 0 #000;
 }
-
-.ctrl { width: 1.3em; height: 1.3em; padding: .22em; }
-.ctrl-skip { width: 1em; height: 1em; padding: .2em; }
-.ctrl:focus-visible,
-.settings-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
-.ctrl-toggle .i-pause,
-#toggle[data-state="running"] .i-play { display: none; }
-#toggle[data-state="running"] .i-pause { display: block; }
 
 /* Barra de experiência: enche conforme o bloco avança (--xp de 0 a 1, definido pelo app) */
 .xp {
   position: relative;
-  height: clamp(6px, 1.1cqw, 12px);
+  height: .42em;
   background: #1b1b1b;
-  border: 2px solid #000;
+  border: .1em solid #000;
 }
 .xp::after { /* divisões da barra */
   content: "";
@@ -150,41 +138,76 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
   background: linear-gradient(#b4ff5a 0 40%, #6fd61e 40%);
 }
 
-/* Corações acima da barra de experiência: cheios = focos concluídos */
-.cycles {
+/* Hotbar de 9 slots */
+.hotbar {
   display: flex;
-  gap: .15em;
-  font-size: clamp(12px, 2cqw, 24px);
-  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, .5));
+  padding: .1em;
+  background: rgba(20, 20, 20, .55);
+  border: .1em solid #000;
+  box-shadow: inset 0 0 0 .08em #8b8b8b;
 }
-.cycle { display: block; width: 1.1em; height: 1.1em; }
-.cycle svg { width: 100%; height: 100%; }
+.hotbar-slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  padding: .26em;
+  background: rgba(139, 139, 139, .25);
+  border: .08em solid #3a3a3a;
+}
+.hotbar-slot > span, .hotbar-slot svg { width: 100%; height: 100%; }
+.hotbar-slot.selected { z-index: 1; box-shadow: 0 0 0 .1em #e6e6e6, 0 0 0 .18em #000; }
+.hotbar-slot.deco { opacity: .9; }
+button.hotbar-slot { cursor: pointer; color: inherit; font: inherit; }
+button.hotbar-slot:hover { background: rgba(255, 255, 255, .28); }
 
-/* Atividade: caixa de chat no canto superior esquerdo */
-.activity {
+.mode-icon .icon { display: none; }
+#app[data-mode="focus"] .icon-focus,
+#app[data-mode="short"] .icon-short,
+#app[data-mode="long"] .icon-long { display: block; }
+
+.ctrl:focus-visible,
+.settings-btn:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+.ctrl-toggle .i-pause,
+#toggle[data-state="running"] .i-play { display: none; }
+#toggle[data-state="running"] .i-pause { display: block; }
+
+/* Atividade: linha do chat no canto inferior esquerdo, "<Você> texto" */
+.chat {
   position: absolute;
-  top: 2.4cqw;
-  left: 2.4cqw;
-  width: 16em;
-  max-width: calc(100vw - 32px);
-  padding: .25em .8em;
-  font: inherit;
-  font-size: clamp(14px, 1.7cqw, 20px);
-  text-align: left;
-  color: var(--text);
+  bottom: 2cqw;
+  left: 2cqw;
+  display: flex;
+  align-items: baseline;
+  gap: .4em;
+  width: 31cqw;
+  padding: .25em .5em;
+  font-size: clamp(11px, 1.5cqw, 18px);
   background: rgba(0, 0, 0, .5);
+  cursor: text;
+}
+.chat-name { flex: none; color: #fff; }
+.activity {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  font: inherit;
+  color: #fff;
+  text-shadow: inherit;
+  background: none;
   border: 0;
 }
-.activity::placeholder { color: rgba(255, 255, 255, .7); }
-.activity:focus { outline: 2px solid #a0a0a0; background: #000; }
+.activity::placeholder { color: rgba(255, 255, 255, .55); }
+.activity:focus { outline: none; }
+.chat:focus-within { background: rgba(0, 0, 0, .75); outline: 1px solid #a0a0a0; }
 
 .settings-btn {
   position: absolute;
-  top: 2.4cqw;
-  right: 2.4cqw;
-  width: clamp(34px, 4.6cqw, 56px);
-  height: clamp(34px, 4.6cqw, 56px);
-  padding: 7px;
+  top: 2cqw;
+  right: 2cqw;
+  padding: .35em .9em;
+  font-size: clamp(11px, 1.5cqw, 18px);
 }
 
 /* Painel de configurações: inventário cinza com bisel */
@@ -230,22 +253,20 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .actions .mc-btn { padding: 8px 18px; }
 
-/* Celular: HUD sai de cima da cena e fica abaixo dela */
+/* Celular: HUD e chat saem de cima da cena e ficam abaixo dela */
 @media (max-width: 640px) {
   .hud {
     position: static;
     transform: none;
-    margin: 16px auto 0;
-    gap: 6px;
+    width: max-content;
+    margin: 14px auto 0;
+    font-size: 22px;
   }
-  .hotbar { font-size: 26px; }
-  .cycles { font-size: 18px; }
-  .activity {
+  .chat {
     position: static;
-    display: block;
-    width: 20em;
+    width: min(100%, 22em);
     margin: 10px auto 0;
-    font-size: 16px;
-    text-align: center;
+    font-size: 14px;
   }
+  .settings-btn { font-size: 11px; }
 }

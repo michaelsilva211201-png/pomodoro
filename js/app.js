@@ -6,11 +6,15 @@ import { iconSvg, paintIcons } from './icons.js';
 import { sunTimes } from './sun.js';
 import { skyAtTime } from './sky.js';
 import { requestLocation } from './location.js';
+import { moonPhaseIndex } from './moon.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
 const HEART = iconSvg('heart');
 const HEART_EMPTY = iconSvg('heartEmpty');
+const FOOD = iconSvg('drumstick');
+const FOOD_EMPTY = iconSvg('drumstickEmpty');
+const FOOD_SLOTS = 10;
 const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume'];
 const BOOL_FIELDS = ['autoStart', 'sound', 'notifications'];
 
@@ -24,6 +28,7 @@ const els = {
   skip: $('skip'),
   cycles: $('cycles'),
   xp: $('xp'),
+  hunger: $('hunger'),
   activity: $('activity'),
   openSettings: $('open-settings'),
   dialog: $('settings'),
@@ -100,6 +105,16 @@ function renderCycles(focusCount) {
   els.cycles.setAttribute('aria-label', `${filled} de ${total} focos concluídos`);
 }
 
+// Comida: cheia no foco; na pausa vai esvaziando conforme o tempo passa.
+function renderHunger(st) {
+  const full = st.mode === 'focus' ? FOOD_SLOTS : Math.ceil((FOOD_SLOTS * st.remainingMs) / st.durationMs);
+  if (els.hunger.dataset.full === String(full)) return;
+  els.hunger.dataset.full = String(full);
+  els.hunger.innerHTML = Array.from({ length: FOOD_SLOTS }, (_, i) =>
+    `<span class="food">${i < full ? FOOD : FOOD_EMPTY}</span>`).join('');
+  els.hunger.setAttribute('aria-label', st.mode === 'focus' ? 'Descansado' : `${full} de ${FOOD_SLOTS} de pausa restante`);
+}
+
 function renderXp(st) {
   const progress = 1 - st.remainingMs / st.durationMs;
   els.xp.style.setProperty('--xp', progress.toFixed(4));
@@ -115,8 +130,10 @@ function render() {
   els.toggle.setAttribute('aria-label', st.running ? 'Pausar' : 'Iniciar');
   renderCycles(st.focusCount);
   renderXp(st);
+  renderHunger(st);
   const now = Date.now();
   scene.setSky(skyAtTime(now, todaySunTimes(now)));
+  scene.setMoonPhase(moonPhaseIndex(now));
   if (celebrating) return; // a cena termina a comemoração no modo antigo
   scene.setMode(st.mode);
   scene.setRunning(st.running);

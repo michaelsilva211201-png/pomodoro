@@ -2,15 +2,17 @@ import { createTimer, finalStretchLevel } from './timer.js';
 import { loadSettings, saveSettings, loadState, saveState, validate } from './settings.js';
 import { unlockAudio, playEnd, notify, requestPermission } from './alerts.js';
 import { createScene } from './scene.js';
+import { iconSvg, paintIcons } from './icons.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
-const CHEVRON = '<svg viewBox="0 0 22 14" aria-hidden="true"><path d="M3 2l6 5-6 5M12 2l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const HEART = iconSvg('heart');
 const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume'];
 const BOOL_FIELDS = ['autoStart', 'sound', 'notifications'];
 
 const $ = (id) => document.getElementById(id);
 const root = $('app');
+paintIcons(root);
 const els = {
   time: $('time'),
   toggle: $('toggle'),
@@ -48,7 +50,7 @@ function persist() {
 function renderCycles(focusCount) {
   const total = settings.cyclesBeforeLong;
   if (els.cycles.childElementCount !== total) {
-    els.cycles.innerHTML = Array.from({ length: total }, () => `<span class="cycle">${CHEVRON}</span>`).join('');
+    els.cycles.innerHTML = Array.from({ length: total }, () => `<span class="cycle">${HEART}</span>`).join('');
   }
   [...els.cycles.children].forEach((el, i) => el.classList.toggle('done', i < focusCount));
   els.cycles.setAttribute('aria-label', `${Math.min(focusCount, total)} de ${total} focos concluídos`);

@@ -61,6 +61,8 @@ Tela única, orientação paisagem, responsiva até largura de celular (~375px; 
 
 ## 5. Cena e animações
 
+> **Atualização (2026-09-30):** a cena foi redesenhada em pixel art no estilo de jogos 2D de blocos (inspirada em Terraria, arte original): casa de madeira em corte lateral, personagem humano que martela na bancada (foco), senta com uma caneca (pausa curta) e dorme na cama (pausa longa); o sol faz um arco no céu; moedas e estrelas caem na comemoração. Interface com painéis azuis de inventário, corações como indicador de ciclos e fontes Pixelify Sans / Silkscreen. A descrição abaixo é do visual original (ursinho); os comportamentos (reta final, comemoração, congelar ao pausar, movimento reduzido) continuam valendo.
+
 Desenho original (não copiar arte de terceiros): parede de madeira, janela com floresta, quadro, estante com livros, escrivaninha, notebook, caneca, luminária, lixeira, ursinho com fone de ouvido. Contornos escuros e grossos, cores quentes.
 
 ### Por modo

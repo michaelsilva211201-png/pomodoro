@@ -4,6 +4,16 @@ const AUDIO_EXT = /\.(mp3|ogg|oga|opus|m4a|aac|wav|flac|webm)$/i;
 const FADE_MS = 1000;
 const FADE_TICK_MS = 50;
 
+// Nome mostrado no "Tocando agora": o nome do arquivo sem a extensão.
+export function trackName(fileName) {
+  return fileName.replace(/\.[^.]+$/, '');
+}
+
+// Faixas da pasta musica/ + escolhidas pelo usuário neste navegador, em ordem alfabética.
+export function mergeTracks(folderTracks, chosenTracks) {
+  return [...folderTracks, ...chosenTracks].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+}
+
 // Lê os arquivos de áudio da listagem de pasta do "python -m http.server" (ignora subpastas e outros arquivos).
 export function parseListing(html) {
   const tracks = [];
@@ -15,7 +25,7 @@ export function parseListing(html) {
     } catch {
       name = href;
     }
-    tracks.push({ url: href, name: name.replace(AUDIO_EXT, '') });
+    tracks.push({ url: href, name: trackName(name) });
   }
   return tracks.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
 }

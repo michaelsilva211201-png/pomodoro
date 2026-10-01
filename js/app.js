@@ -7,7 +7,8 @@ import { sunTimes } from './sun.js';
 import { skyAtTime } from './sky.js';
 import { requestLocation } from './location.js';
 import { moonPhaseIndex } from './moon.js';
-import { loadTracks, createMusicPlayer, shouldPlayMusic } from './music.js';
+import { loadTracks, createMusicPlayer, shouldPlayMusic, mergeTracks } from './music.js';
+import { storeMusicFiles, loadStoredTracks, clearStoredMusic } from './music-store.js';
 import { createAmbience, pickMobSounds } from './ambience.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
@@ -34,6 +35,9 @@ const els = {
   hunger: $('hunger'),
   nowPlaying: $('now-playing'),
   musicInfo: $('music-info'),
+  pickMusic: $('pick-music'),
+  clearMusic: $('clear-music'),
+  musicFiles: $('music-files'),
   activity: $('activity'),
   openSettings: $('open-settings'),
   dialog: $('settings'),
@@ -53,7 +57,10 @@ let celebrating = false;
 let lastSaveAt = 0;
 let place = loadLocation(); // null → horário padrão 6h–18h
 let sunCache = { key: '', times: null };
-let music = null; // criado quando a lista da pasta musica/ termina de carregar
+let music = null; // recriado quando a lista de músicas muda
+let folderTracks = []; // pasta musica/ (só no servidor local)
+let chosenTracks = []; // escolhidas pelo usuário, guardadas neste navegador
+let tracksLoaded = false;
 const ambience = createAmbience();
 let nowPlayingTimer = null;
 
@@ -66,9 +73,22 @@ function showNowPlaying(track) {
 }
 
 function describeMusic() {
-  if (!music) return 'Procurando músicas na pasta musica/…';
-  if (!music.count) return 'Nenhuma música encontrada. Coloque arquivos (MP3, OGG…) em pomodoro/musica/.';
-  return `${music.count} ${music.count === 1 ? 'música' : 'músicas'} na pasta musica/`;
+  if (!tracksLoaded) return 'Procurando músicas…';
+  const total = folderTracks.length + chosenTracks.length;
+  if (!total) return 'Nenhuma música. Use "Escolher músicas…" para tocar arquivos do seu computador.';
+  const parts = [];
+  if (chosenTracks.length) parts.push(`${chosenTracks.length} escolhida${chosenTracks.length === 1 ? '' : 's'} neste navegador`);
+  if (folderTracks.length) parts.push(`${folderTracks.length} na pasta musica/`);
+  return `${total} ${total === 1 ? 'música' : 'músicas'}: ${parts.join(', ')}`;
+}
+
+// Troca a lista do tocador (a anterior sai com fade).
+function rebuildMusic() {
+  music?.setPlaying(false);
+  music = createMusicPlayer(mergeTracks(folderTracks, chosenTracks), { onTrackStart: showNowPlaying });
+  music.setVolume(settings.musicVolume / 100);
+  els.musicInfo.textContent = describeMusic();
+  render();
 }
 
 // Nascer/pôr do sol de hoje (recalcula quando muda o dia ou a localização).
@@ -292,11 +312,35 @@ els.dialog.addEventListener('close', () => {
 
 window.addEventListener('pagehide', persist);
 
-loadTracks().then((tracks) => {
-  music = createMusicPlayer(tracks, { onTrackStart: showNowPlaying });
-  music.setVolume(settings.musicVolume / 100);
-  els.musicInfo.textContent = describeMusic();
-  render();
+Promise.all([loadTracks(), loadStoredTracks()]).then(([folder, chosen]) => {
+  folderTracks = folder;
+  chosenTracks = chosen;
+  tracksLoaded = true;
+  rebuildMusic();
+});
+
+els.pickMusic.addEventListener('click', () => els.musicFiles.click());
+els.musicFiles.addEventListener('change', async () => {
+  const files = [...els.musicFiles.files];
+  els.musicFiles.value = '';
+  if (!files.length) return;
+  els.musicInfo.textContent = 'Guardando músicas…';
+  try {
+    await storeMusicFiles(files);
+  } catch {
+    els.musicInfo.textContent = 'Não foi possível guardar as músicas neste navegador.';
+    return;
+  }
+  chosenTracks.forEach((t) => URL.revokeObjectURL(t.url));
+  chosenTracks = await loadStoredTracks();
+  rebuildMusic();
+});
+els.clearMusic.addEventListener('click', async () => {
+  if (!chosenTracks.length || !confirm('Remover as músicas escolhidas deste navegador?')) return;
+  await clearStoredMusic();
+  chosenTracks.forEach((t) => URL.revokeObjectURL(t.url));
+  chosenTracks = [];
+  rebuildMusic();
 });
 
 if (!place) refreshLocation(); // primeira vez: o navegador pergunta se pode usar a localização

@@ -9,5 +9,7 @@ Coloque nesta pasta os arquivos de música que você quer ouvir
 - No painel "Opções..." você escolhe quando tocar (só no foco, foco e pausas
   ou desligada) e o volume da música.
 - Os arquivos desta pasta não vão para o Git (só este LEIA-ME).
+- No site publicado esta pasta fica vazia: lá, use "Opções..." > "Escolher músicas…"
+  para tocar arquivos do seu computador (ficam guardados só no seu navegador).
 - Funciona com o atalho "Abrir Pomodoro" (servir.py) ou com "python -m http.server",
   que listam a pasta para o app.

@@ -272,6 +272,9 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; }
 .field input[type="checkbox"] { width: 22px; height: 22px; accent-color: #4f8a2f; }
 .field input[type="range"] { accent-color: #4f8a2f; }
 .hint { margin: 4px 0 0; color: #a01010; font-size: 16px; }
+.music-files { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+.music-files .mc-btn { padding: 5px 10px; font-size: 15px; }
+
 .sky-row {
   display: grid;
   gap: 6px;

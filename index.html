@@ -82,6 +82,11 @@
         </label>
         <label class="field">Volume da música <input name="musicVolume" type="range" min="0" max="100"></label>
         <small id="music-info" class="sky-info"></small>
+        <div class="music-files">
+          <button id="pick-music" type="button" class="mc-btn">Escolher músicas…</button>
+          <button id="clear-music" type="button" class="mc-btn">Remover escolhidas</button>
+          <input id="music-files" type="file" accept="audio/*" multiple hidden>
+        </div>
         <label class="field">Sons ambientes <input name="ambience" type="checkbox"></label>
         <label class="field">Volume do ambiente <input name="ambienceVolume" type="range" min="0" max="100"></label>
         <label class="field">Chuva <input name="rain" type="checkbox"></label>

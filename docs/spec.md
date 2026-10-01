@@ -125,7 +125,7 @@ Enquanto houver bloco carregado: `🍅 MM:SS – Foco` / `☕ MM:SS – Pausa` /
 
 ## 8.1 Música de fundo
 
-Arquivos de áudio colocados em `pomodoro/musica/` (MP3, OGG, OPUS, M4A, AAC, WAV, FLAC, WEBM) são descobertos pela listagem de pasta do `python -m http.server` e tocados em sequência, em ordem alfabética, em loop. Opção **Música** no painel: *Só no foco* (padrão), *Foco e pausas* ou *Desligada*; **Volume da música** separado (padrão 40%). A música pausa junto com o timer (retoma do mesmo ponto), entra e sai com fade de ~1 s, e faixas com erro são puladas. Ao começar uma faixa, aparece "Tocando agora: nome" acima da hotbar por 4 s. Os arquivos da pasta não vão para o Git (só o `LEIA-ME.txt`).
+Arquivos de áudio colocados em `pomodoro/musica/` (MP3, OGG, OPUS, M4A, AAC, WAV, FLAC, WEBM) são descobertos pela listagem de pasta do `python -m http.server` e tocados em sequência, em ordem alfabética, em loop. Opção **Música** no painel: *Só no foco* (padrão), *Foco e pausas* ou *Desligada*; **Volume da música** separado (padrão 40%). A música pausa junto com o timer (retoma do mesmo ponto), entra e sai com fade de ~1 s, e faixas com erro são puladas. Ao começar uma faixa, aparece "Tocando agora: nome" acima da hotbar por 4 s. Os arquivos da pasta não vão para o Git (só o `LEIA-ME.txt`). Também dá para usar **"Escolher músicas…"** no painel: os arquivos escolhidos ficam guardados só naquele navegador (IndexedDB, `js/music-store.js`) e entram na mesma lista; "Remover escolhidas" apaga. É assim que a música funciona na versão publicada, que não tem a pasta.
 
 ## 8.2 Mobs
 

@@ -1,5 +1,6 @@
-import { renderScene } from './world.js';
-import { SCENE_W, LAYOUT } from './art.js';
+import { renderScene, mobMarkup } from './world.js';
+import { SCENE_W, LAYOUT, SPRITES, GROUND_Y } from './art.js';
+import { createMobWorld, stepMobs, MOB_TYPES } from './mobs.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -27,6 +28,62 @@ function spawnConfetti(layer) {
   layer.replaceChildren(...pieces);
 }
 
+const MOVING = new Set(['enter', 'walk', 'leave', 'flee']);
+
+const MOB_FRAME_MS = 33; // ~30 quadros por segundo
+
+// Mobs do lado de fora: simulação em mobs.js, desenhada aqui a cada quadro.
+// Usa setInterval (e não requestAnimationFrame) para continuar andando mesmo quando o navegador não redesenha a página.
+function startMobs(root, svg, getNight) {
+  const layer = svg.querySelector('#mobs');
+  const world = createMobWorld();
+  const els = new Map();
+  let last = performance.now();
+
+  function draw() {
+    const alive = new Set();
+    for (const m of world.mobs) {
+      alive.add(m.id);
+      let el = els.get(m.id);
+      if (!el) {
+        el = document.createElementNS(SVG_NS, 'g');
+        el.innerHTML = mobMarkup(m.type);
+        layer.append(el);
+        els.set(m.id, el);
+      }
+      const { w } = MOB_TYPES[m.type];
+      const h = SPRITES[`${m.type}A`].rows.length;
+      const moving = MOVING.has(m.state) || (m.state === 'approach' && !m.arrived);
+      el.setAttribute('transform', `translate(${Math.round(m.x)} ${GROUND_Y - h})`);
+      el.setAttribute('class', `mob ${m.type} ${m.state}${moving ? ' walking' : ''}`);
+      el.firstElementChild.setAttribute('transform', m.dir < 0 ? `translate(${w} 0) scale(-1 1)` : '');
+    }
+    for (const [id, el] of els) {
+      if (!alive.has(id)) {
+        el.remove();
+        els.delete(id);
+      }
+    }
+  }
+
+  function frame() {
+    const now = performance.now();
+    const dt = Math.min(100, now - last);
+    last = now;
+    const celebrating = root.classList.contains('celebrating');
+    const paused = !root.classList.contains('running') && !celebrating;
+    stepMobs(world, dt, {
+      night: getNight(),
+      final: root.dataset.mode === 'focus' && root.dataset.final !== 'none',
+      celebrating,
+      still: paused || prefersReducedMotion(),
+      rand: Math.random,
+    });
+    draw();
+  }
+  setInterval(frame, MOB_FRAME_MS);
+}
+
 export function createScene(root) {
   const svg = root.querySelector('.scene');
   svg.innerHTML = renderScene();
@@ -39,6 +96,8 @@ export function createScene(root) {
   const nightLayers = [svg.querySelector('#stars'), moon];
   const confetti = svg.querySelector('#confetti');
   let lastSky = '';
+  let night = 0;
+  startMobs(root, svg, () => night);
 
   return {
     setMode(mode) {
@@ -52,6 +111,7 @@ export function createScene(root) {
       const key = `${sky.top}|${sky.sunX.toFixed(3)}|${sky.night.toFixed(2)}`;
       if (key === lastSky) return;
       lastSky = key;
+      night = sky.night;
       skyTop.setAttribute('stop-color', sky.top);
       skyBottom.setAttribute('stop-color', sky.bottom);
       // Sol em arco do horizonte esquerdo ao direito. A altura sobe rápido (expoente < 1) para o sol

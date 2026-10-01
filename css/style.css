@@ -98,9 +98,17 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
   font-size: clamp(14px, 2.6cqw, 32px);
 }
 
-/* "Tocando agora": texto que muda de cor, como o aviso da jukebox */
+/* "Tocando agora": texto que muda de cor, como o aviso da jukebox.
+   Flutua acima do HUD sem alargá-lo; nomes longos terminam em "…". */
 .now-playing {
-  margin-bottom: .1em;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 60cqw;
+  margin-bottom: .3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: .62em;
   text-align: center;
   white-space: nowrap;
@@ -279,7 +287,9 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; }
 /* Celular: HUD e chat saem de cima da cena e ficam abaixo dela */
 @media (max-width: 640px) {
   .hud {
-    position: static;
+    position: relative; /* continua no fluxo; serve de referência para o "Tocando agora" */
+    left: auto;
+    bottom: auto;
     transform: none;
     width: max-content;
     margin: 14px auto 0;

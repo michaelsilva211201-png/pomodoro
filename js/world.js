@@ -77,6 +77,13 @@ function torches() {
     at([x, y], frames(draw('flameA'), draw('flameB')) + at([0, -1], smoke), ' class="flame"')).join('');
 }
 
+// Um mob: quadros de caminhada, fogo (ao amanhecer) e, na criatura de musgo, o brilho da reta final.
+export function mobMarkup(type) {
+  const flash = type === 'mossling' ? `<g class="flash">${draw('mosslingFlash')}</g>` : '';
+  const burn = `<g class="burn-fx">${frames(draw('burnA', 0, 4), draw('burnB', 0, 4))}</g>`;
+  return `<g class="mob-body">${frames(draw(`${type}A`), draw(`${type}B`))}${flash}${burn}</g>`;
+}
+
 // As 8 fases da lua; o CSS mostra só a do dia (atributo data-phase em #moon).
 function moonPhases() {
   return Array.from({ length: 8 }, (_, i) => `<g class="moon-phase" data-phase="${i}">${draw(`moon${i}`)}</g>`).join('');
@@ -94,6 +101,7 @@ export function renderScene() {
     world(),
     decor(),
     shadows(),
+    '<g id="mobs"></g>',
     player(),
     `<rect id="night-shade" width="${SCENE_W}" height="${SCENE_H}" fill="#060a24" opacity="0"/>`,
     `<g id="stars" opacity="0">${stars}</g>`,

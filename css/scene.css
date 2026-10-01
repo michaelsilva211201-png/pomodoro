@@ -108,6 +108,17 @@
 .confetti-piece { animation: fall var(--dur, 1.4s) steps(16) var(--delay, 0s) both; }
 @keyframes fall { to { transform: translate(var(--dx, 0px), 190px); } }
 
+/* Mobs: andando alternam os quadros; parados mostram só o primeiro */
+.mob { --frame: .4s; }
+.mob:not(.walking) > .mob-body > .f1 { animation: none; opacity: 1; }
+.mob:not(.walking) > .mob-body > .f2 { animation: none; opacity: 0; }
+.mob.flee { --frame: .16s; }
+.mob .burn-fx { display: none; }
+.mob.burn .burn-fx { display: inline; --frame: .2s; }
+.mob .flash { opacity: 0; }
+.mob.mossling.approach .flash { animation: mob-flash .5s steps(1) infinite; }
+@keyframes mob-flash { 50% { opacity: .85; } }
+
 /* Movimento reduzido: sem animações contínuas nem piscadas */
 @media (prefers-reduced-motion: reduce) {
   #app, #app * { animation: none !important; transition: none !important; }

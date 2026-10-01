@@ -398,6 +398,131 @@ export const SPRITES = {
   spark: { palette: { y: '#f6ffb0' }, rows: ['.y.', 'yyy', '.y.'] },
 };
 
+// ---------- Mobs (vistos de lado, virados para a direita; A e B = quadros de caminhada) ----------
+
+const MOSSLING_A = [ // criatura de musgo original: bloco de musgo com um olho e pavio de dinamite
+  '.....s......',
+  '....sS......',
+  '.....f......',
+  '....ff......',
+  '.mmlmmmMmml.',
+  'mlmmMmmmmlmm',
+  'mmmmwwwwmmMm',
+  'mMmwwkkwwmmm',
+  'mmmwwkkwwmlm',
+  'mlmmwwwwmmmm',
+  'mmmmmmmmmMmm',
+  'mMmlmmmmlmmm',
+  'mmmmmMmmmmmm',
+  '.mmmmmmmmmm.',
+  '..MM....MM..',
+  '..MM....MM..',
+];
+const MOSSLING = { m: '#4f8a3a', M: '#3a6a2a', l: '#6aa84f', w: '#e8f0d8', k: '#1a1a1a', f: '#8a6a3a', s: '#ffd34d', S: '#ff6a2a' };
+
+const ZOMBIE = { z: '#6f9a5a', Z: '#557a44', e: '#1a2a14', c: '#6b4a30', C: '#4f3622', p: '#3f3f4a', P: '#2c2c36' };
+const ZOMBIE_TOP = [
+  'zzzzzzzz..',
+  'zZzzzzzz..',
+  'zzzzzzez..',
+  'Zzzzzzez..',
+  'zzzzzzzz..',
+  'zzzzzeez..',
+  'ZzzzzzzZ..',
+  'ZZzzzzZZ..',
+  '..cccc....',
+  '..cccccczz',
+  '..CccccCzz',
+  '..cccc....',
+  '..cCcc....',
+  '..cccc....',
+  '..ccCc....',
+  '..cc.c....',
+  '..cccc....',
+  '..cc.c....',
+  '..pppp....',
+  '..pPpp....',
+];
+
+const SKELETON = { b: '#d8d8d0', B: '#a8a8a0', k: '#2a2a2a', n: '#8a5a2b' };
+const SKELETON_TOP = [
+  'bbbbbbbb..',
+  'bBbbbbbb..',
+  'bbbbbkkb..',
+  'Bbbbbkkb..',
+  'bbbbbbbb..',
+  'bbbkkkkb..',
+  'BbbbbbbB.n',
+  'BBbbbbBB.n',
+  '...bb....n',
+  '..bbbbbbbn',
+  '..bkkb...n',
+  '..bbbb...n',
+  '..bkkb...n',
+  '..bbbb...n',
+  '..bkkb...n',
+  '...bb.....',
+  '..bbbb....',
+  '..b..b....',
+];
+
+const MOB_SPRITES = {
+  chickenA: {
+    palette: { w: '#f4f4f4', W: '#cfcfcf', y: '#e8b020', r: '#d82a2a', k: '#1a1a1a' },
+    rows: ['.....ww.', '....wkwy', '....wwwr', 'wwwwwww.', 'Wwwwwww.', '.WwwwW..', '..y..y..', '..y..y..'],
+  },
+  chickenB: {
+    palette: { w: '#f4f4f4', W: '#cfcfcf', y: '#e8b020', r: '#d82a2a', k: '#1a1a1a' },
+    rows: ['.....ww.', '....wkwy', '....wwwr', 'wwwwwww.', 'Wwwwwww.', '.WwwwW..', '...yy...', '..y..y..'],
+  },
+  pigA: {
+    palette: { p: '#f0a0a8', P: '#d07880', n: '#c86a74', k: '#1a1a1a' },
+    rows: ['.........pp.', 'pppppppppkpp', 'ppppppppppnn', 'ppppppppppnn', 'PpppppppppP.', '.PPPPPPPPP..', '.pp.....pp..', '.PP.....PP..'],
+  },
+  pigB: {
+    palette: { p: '#f0a0a8', P: '#d07880', n: '#c86a74', k: '#1a1a1a' },
+    rows: ['.........pp.', 'pppppppppkpp', 'ppppppppppnn', 'ppppppppppnn', 'PpppppppppP.', '.PPPPPPPPP..', '..pp...pp...', '..PP...PP...'],
+  },
+  sheepA: {
+    palette: { w: '#ececec', W: '#c8c8c8', f: '#c9a98a', F: '#a8876a', k: '#1a1a1a' },
+    rows: ['..wwwwwwww..', '.wwwwwwwwwff', 'wwwwwwwwwwfk', 'wwwwwwwwwwff', 'WwwwwwwwwwFf', '.WWWWWWWWW..', '.ff......ff.', '.ff......ff.', '.ff......ff.', '.FF......FF.'],
+  },
+  sheepB: {
+    palette: { w: '#ececec', W: '#c8c8c8', f: '#c9a98a', F: '#a8876a', k: '#1a1a1a' },
+    rows: ['..wwwwwwww..', '.wwwwwwwwwff', 'wwwwwwwwwwfk', 'wwwwwwwwwwff', 'WwwwwwwwwwFf', '.WWWWWWWWW..', '..ff....ff..', '..ff....ff..', '..ff....ff..', '..FF....FF..'],
+  },
+  zombieA: { palette: ZOMBIE, rows: [...ZOMBIE_TOP, '..pp.pp...', '.pp...pp..', '.pp...pp..', '.PP...PP..'] },
+  zombieB: { palette: ZOMBIE, rows: [...ZOMBIE_TOP, '..pppp....', '..pppp....', '..pPPp....', '..PPPP....'] },
+  skeletonA: { palette: SKELETON, rows: [...SKELETON_TOP, '..b..b....', '..b..b....', '.b....b...', '.b....b...', '.b....b...', '.B....B...'] },
+  skeletonB: { palette: SKELETON, rows: [...SKELETON_TOP, '..b..b....', '...bb.....', '...bb.....', '...bb.....', '...bb.....', '...BB.....'] },
+  spiderA: {
+    palette: { k: '#2e2626', K: '#463a3a', r: '#d81e1e', l: '#1a1212' },
+    rows: ['...KKKKk......', '.lKkkkkkkKk.l.', 'l.kkkkkkkkkrr.', '.l.KkkkkkKrr.l', 'l..l..l..l..l.', '.l..l..l..l...'],
+  },
+  spiderB: {
+    palette: { k: '#2e2626', K: '#463a3a', r: '#d81e1e', l: '#1a1212' },
+    rows: ['...KKKKk......', '.lKkkkkkkKk.l.', 'l.kkkkkkkkkrr.', '.l.KkkkkkKrr.l', '.l..l..l..l..l', 'l..l..l..l..l.'],
+  },
+  mosslingA: { palette: MOSSLING, rows: MOSSLING_A },
+  mosslingB: {
+    palette: MOSSLING,
+    rows: ['......s.....', '.....Ss.....', ...MOSSLING_A.slice(2, 14), '...MM..MM...', '...MM..MM...'],
+  },
+  mosslingFlash: { // pisca branco na reta final, como quem vai explodir (nunca explode)
+    palette: { x: 'rgba(255,255,255,.85)' },
+    rows: MOSSLING_A.map((r) => r.replace(/[^.]/g, 'x')),
+  },
+  burnA: {
+    palette: { y: '#ffe066', o: '#ff9a2a', r: '#e0501a' },
+    rows: ['..y...y...', '.yoy.yoy..', '.yooyooy.y', 'yoorooroyo', 'oorrooorro', '.orr.orr..'],
+  },
+  burnB: {
+    palette: { y: '#ffe066', o: '#ff9a2a', r: '#e0501a' },
+    rows: ['.y...y...y', 'yoy.yoy.yo', 'yooyooyoo.', 'oorooroyoo', 'orroorrooo', '..rro.rr..'],
+  },
+};
+Object.assign(SPRITES, MOB_SPRITES);
+
 // Nuvem em camadas retangulares, semitransparente (largura em pixels; seed muda o recorte).
 export function cloud(width, seed) {
   const rand = rng(seed);

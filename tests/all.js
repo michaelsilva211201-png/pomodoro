@@ -7,3 +7,4 @@ import './art.test.js';
 import './moon.test.js';
 import './music.test.js';
 import './mobs.test.js';
+import './ambience.test.js';

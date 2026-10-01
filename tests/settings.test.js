@@ -91,3 +91,9 @@ test('settings: música tem modo e volume próprios, com valores inválidos volt
   eq(validate({ musicMode: 'rock' }).musicMode, 'focus');
   eq(validate({ musicMode: 3 }).musicMode, 'focus');
 });
+
+test('settings: sons ambientes ligados, volume 50 e chuva desligada por padrão', () => {
+  eq([DEFAULTS.ambience, DEFAULTS.ambienceVolume, DEFAULTS.rain], [true, 50, false]);
+  eq(validate({ ambienceVolume: -3, rain: 'sim' }).ambienceVolume, 0);
+  eq(validate({ rain: 'sim' }).rain, false);
+});

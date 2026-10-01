@@ -1,0 +1,33 @@
+CRÉDITOS DOS SONS
+=================
+
+Os sons dos mobs vêm do Wikimedia Commons. Foram recortados, mudados de tom,
+volume e/ou receberam eco dentro do app (js/ambience.js). Os demais sons
+(vento, chuva, grilos, pássaros, fogo, caverna, ossos, aranha e pavio) são
+sintetizados pelo próprio app, sem arquivos.
+
+galinha.ogg
+  Original: "Hens leaving coop.ogg"
+  Autor: alys
+  Licença: Domínio público
+  Fonte: https://commons.wikimedia.org/wiki/File:Hens_leaving_coop.ogg
+
+ovelha.ogg
+  Original: "Sheep bleat.ogg"
+  Autor: InverseHypercube
+  Licença: CC0 1.0 (domínio público)
+  Fonte: https://commons.wikimedia.org/wiki/File:Sheep_bleat.ogg
+
+zumbi.ogg
+  Original: "Zombie moan.ogg"
+  Autor: gregoryweir
+  Licença: Domínio público
+  Fonte: https://commons.wikimedia.org/wiki/File:Zombie_moan.ogg
+
+porco.ogg
+  Original: "Pig grunt - Erdie.ogg"
+  Autor: Erdie (https://freesound.org/people/Erdie/)
+  Licença: Creative Commons Atribuição 3.0 (CC BY 3.0)
+           https://creativecommons.org/licenses/by/3.0/
+  Fonte: https://commons.wikimedia.org/wiki/File:Pig_grunt_-_Erdie.ogg
+  Alterações: tom e volume ajustados no app; tocado como som ambiente do porco.

@@ -131,6 +131,10 @@ Arquivos de áudio colocados em `pomodoro/musica/` (MP3, OGG, OPUS, M4A, AAC, WA
 
 Do lado de fora da casa (nunca dentro) andam mobs originais em pixel art (`js/mobs.js`, lógica pura com testes; desenho em `scene.js`, ~30 quadros/s). De dia: galinha, porco e ovelha. À noite (quando o céu passa da metade do escuro): zumbi, esqueleto, aranha e uma criatura de musgo original com pavio de dinamite — o Creeper não é usado por ser um personagem protegido. Ao anoitecer os animais saem pelas bordas e os monstros chegam; ao amanhecer zumbi e esqueleto pegam fogo e somem, os demais vão embora. No último minuto do foco os monstros encostam na casa (o pavio da criatura de musgo pisca). Na comemoração do fim do bloco os monstros fogem e voltam ~4 s depois. Timer parado ou movimento reduzido: os mobs aparecem já posicionados e ficam parados.
 
+## 8.3 Sons ambientes
+
+Com o timer rodando (fade ao pausar), `js/ambience.js` toca: de dia vento e pássaros; à noite grilos e um ronco grave de caverna; sempre o crepitar do fogo; chuva opcional. Mobs fazem som de vez em quando (~15 s cada, só visíveis e não indo embora), com volume maior perto da casa e lado estéreo pela posição: galinha, ovelha, porco e zumbi (gemido com tom rebaixado e eco) a partir de gravações do Wikimedia Commons em `sons/` (créditos e licenças em `sons/CREDITOS.txt`; o porco é CC BY 3.0, de Erdie); esqueleto, aranha e criatura de musgo são sintetizados, e o pavio da criatura chia enquanto ela encosta na casa na reta final. Opções: *Sons ambientes* (ligado), *Volume do ambiente* (50%) e *Chuva* (desligada).
+
 ## 9. Persistência
 
 Chaves em `localStorage`:

@@ -82,6 +82,7 @@ function startMobs(root, svg, getNight) {
     draw();
   }
   setInterval(frame, MOB_FRAME_MS);
+  return world;
 }
 
 export function createScene(root) {
@@ -97,9 +98,10 @@ export function createScene(root) {
   const confetti = svg.querySelector('#confetti');
   let lastSky = '';
   let night = 0;
-  startMobs(root, svg, () => night);
+  const mobWorld = startMobs(root, svg, () => night);
 
   return {
+    getMobs: () => mobWorld.mobs,
     setMode(mode) {
       root.dataset.mode = mode;
     },

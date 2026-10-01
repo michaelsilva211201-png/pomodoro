@@ -8,6 +8,7 @@ import { skyAtTime } from './sky.js';
 import { requestLocation } from './location.js';
 import { moonPhaseIndex } from './moon.js';
 import { loadTracks, createMusicPlayer, shouldPlayMusic } from './music.js';
+import { createAmbience, pickMobSounds } from './ambience.js';
 
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
@@ -16,8 +17,9 @@ const HEART_EMPTY = iconSvg('heartEmpty');
 const FOOD = iconSvg('drumstick');
 const FOOD_EMPTY = iconSvg('drumstickEmpty');
 const FOOD_SLOTS = 10;
-const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume', 'musicVolume'];
-const BOOL_FIELDS = ['autoStart', 'sound', 'notifications'];
+const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume', 'musicVolume', 'ambienceVolume'];
+const BOOL_FIELDS = ['autoStart', 'sound', 'notifications', 'ambience', 'rain'];
+const TICK_MS = 250;
 
 const $ = (id) => document.getElementById(id);
 const root = $('app');
@@ -52,6 +54,7 @@ let lastSaveAt = 0;
 let place = loadLocation(); // null → horário padrão 6h–18h
 let sunCache = { key: '', times: null };
 let music = null; // criado quando a lista da pasta musica/ termina de carregar
+const ambience = createAmbience();
 let nowPlayingTimer = null;
 
 // Como o aviso de disco tocando no jogo: aparece alguns segundos acima da hotbar.
@@ -151,7 +154,14 @@ function render() {
   renderXp(st);
   renderHunger(st);
   const now = Date.now();
-  scene.setSky(skyAtTime(now, todaySunTimes(now)));
+  const sky = skyAtTime(now, todaySunTimes(now));
+  scene.setSky(sky);
+  ambience.update({
+    active: settings.ambience && (st.running || celebrating),
+    volume: settings.ambienceVolume / 100,
+    night: sky.night,
+    rain: settings.rain,
+  });
   scene.setMoonPhase(moonPhaseIndex(now));
   music?.setPlaying(shouldPlayMusic(st, settings.musicMode));
   if (celebrating) return; // a cena termina a comemoração no modo antigo
@@ -173,16 +183,26 @@ async function onBlockEnd(endedMode) {
   render();
 }
 
+// Sons dos mobs: de vez em quando, e o chiado do pavio quando a criatura de musgo encosta na casa.
+function playMobSounds() {
+  if (!settings.ambience) return;
+  const mobs = scene.getMobs();
+  for (const m of pickMobSounds(mobs, TICK_MS, Math.random)) ambience.mobSound(m);
+  ambience.setFuse(mobs.find((m) => m.type === 'mossling' && m.state === 'approach') ?? null);
+}
+
 function onTick() {
   const endedMode = timer.getState().mode;
   if (timer.tick()) onBlockEnd(endedMode);
   render();
+  playMobSounds();
   if (timer.getState().running && Date.now() - lastSaveAt > 5000) persist();
 }
 
 // Controles do timer
 els.toggle.addEventListener('click', () => {
   unlockAudio();
+  ambience.unlock();
   if (timer.getState().running) timer.pause();
   else timer.start();
   persist();
@@ -261,6 +281,7 @@ els.useLocation.addEventListener('click', async () => {
 els.dialog.addEventListener('close', () => {
   if (els.dialog.returnValue !== 'save') return;
   unlockAudio();
+  ambience.unlock();
   settings = readForm();
   saveSettings(settings);
   timer.updateSettings(settings);

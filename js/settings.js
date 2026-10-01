@@ -13,6 +13,9 @@ export const DEFAULTS = Object.freeze({
   notifications: false,
   musicMode: 'focus', // 'focus' (só no foco) | 'always' (foco e pausas) | 'off'
   musicVolume: 40,
+  ambience: true, // sons ambientes (vento, grilos, fogo, mobs…)
+  ambienceVolume: 50,
+  rain: false,
 });
 
 const LIMITS = {
@@ -22,6 +25,7 @@ const LIMITS = {
   cyclesBeforeLong: [1, 12],
   volume: [0, 100],
   musicVolume: [0, 100],
+  ambienceVolume: [0, 100],
 };
 
 const CHOICES = {

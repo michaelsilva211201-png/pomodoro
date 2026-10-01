@@ -12,10 +12,19 @@
 @keyframes frame-a { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 0; } }
 @keyframes frame-b { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 1; } }
 
-/* Árvores balançando 1 pixel */
-.canopy { animation: sway 2.6s steps(1) infinite; }
-.tree + .tree .canopy { animation-delay: -1.3s; }
-@keyframes sway { 0% { transform: translateX(0); } 50% { transform: translateX(1px); } }
+/* Nuvens chatas deslizando devagar para a direita (dão a volta na cena) */
+.cloud { animation: clouds 120s linear infinite; }
+.cloud:nth-child(2) { animation-delay: -40s; }
+.cloud:nth-child(3) { animation-delay: -80s; }
+@keyframes clouds {
+  0% { transform: translateX(0); }
+  49.99% { transform: translateX(340px); }
+  50% { transform: translateX(-340px); }
+  100% { transform: translateX(0); }
+}
+
+/* Fogo da fornalha */
+.fire { --frame: .4s; }
 
 /* Tochas */
 .flame { --frame: .32s; }
@@ -35,15 +44,14 @@
 #pose-work { --frame: .5s; }
 #pose-sit { --frame: 3s; }
 
-/* Vapor da caneca e "Z z z" */
-.puff, .zee { opacity: 0; }
-.puff { animation: rise 1.8s steps(4) infinite; }
-.puff:nth-child(2) { animation-delay: -.6s; }
-.puff:nth-child(3) { animation-delay: -1.2s; }
-@keyframes rise {
-  0% { opacity: 0; transform: translateY(0); }
-  25% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-8px); }
+/* Farelos do pão e "Z z z" */
+.crumb, .zee { opacity: 0; }
+.crumb { animation: crumbs 1s steps(5) infinite; }
+.crumb:nth-child(2) { animation-delay: -.33s; }
+.crumb:nth-child(3) { animation-delay: -.66s; }
+@keyframes crumbs {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(10px); }
 }
 .zee { animation: drift 2.4s steps(4) infinite; }
 .zee:nth-child(2) { animation-delay: -.8s; }
@@ -54,7 +62,7 @@
   100% { opacity: 0; transform: translate(3px, -6px); }
 }
 
-/* Reta final — foco: martela mais rápido e sua */
+/* Reta final — foco: trabalha mais rápido e sua */
 #sweat, .yawn { opacity: 0; }
 #app[data-mode="focus"]:not([data-final="none"]) #pose-work { --frame: .22s; }
 #app[data-mode="focus"]:not([data-final="none"]) #sweat { animation: drip 1s steps(3) infinite; }
@@ -65,7 +73,7 @@
 
 /* Reta final — pausa: acorda/boceja */
 #app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) .yawn { opacity: 1; }
-#app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) :is(#steam, #zzz) { display: none; }
+#app:is([data-mode="short"], [data-mode="long"]):not([data-final="none"]) :is(#crumbs, #zzz) { display: none; }
 
 /* Reta final — barra do timer e moldura */
 #app:not([data-final="none"]) .time { animation: pulse 1s steps(2) infinite; }
@@ -75,7 +83,7 @@
 @keyframes shake { 0% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
 @keyframes blink { 50% { border-color: color-mix(in srgb, var(--mode) 50%, white); } }
 
-/* Comemoração: pula com os braços para cima e chovem moedas */
+/* Comemoração: pula com os braços para cima e chovem orbes de experiência */
 #app.celebrating #player .pose { display: none; }
 #app.celebrating #player #pose-cheer { display: inline; }
 .hop { animation: hop .3s steps(2) infinite alternate; }

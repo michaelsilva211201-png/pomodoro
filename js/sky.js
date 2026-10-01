@@ -1,5 +1,5 @@
 // Céu a partir do horário real: dia → amanhecer/entardecer → noite.
-const DAY = { top: [70, 140, 235], bottom: [170, 215, 255] };
+const DAY = { top: [120, 167, 255], bottom: [192, 216, 255] };
 const DUSK = { top: [235, 110, 70], bottom: [255, 196, 120] };
 const NIGHT = { top: [12, 16, 48], bottom: [36, 44, 100] };
 

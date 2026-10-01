@@ -10,6 +10,7 @@ import { requestLocation } from './location.js';
 const LABELS = { focus: 'Foco', short: 'Pausa', long: 'Pausa longa' };
 const EMOJI = { focus: '🍅', short: '☕', long: '🌙' };
 const HEART = iconSvg('heart');
+const HEART_EMPTY = iconSvg('heartEmpty');
 const NUMBER_FIELDS = ['focusMin', 'shortMin', 'longMin', 'cyclesBeforeLong', 'volume'];
 const BOOL_FIELDS = ['autoStart', 'sound', 'notifications'];
 
@@ -22,6 +23,7 @@ const els = {
   reset: $('reset'),
   skip: $('skip'),
   cycles: $('cycles'),
+  xp: $('xp'),
   activity: $('activity'),
   openSettings: $('open-settings'),
   dialog: $('settings'),
@@ -88,11 +90,20 @@ function persist() {
 
 function renderCycles(focusCount) {
   const total = settings.cyclesBeforeLong;
-  if (els.cycles.childElementCount !== total) {
-    els.cycles.innerHTML = Array.from({ length: total }, () => `<span class="cycle">${HEART}</span>`).join('');
+  const filled = Math.min(focusCount, total);
+  const key = `${filled}/${total}`;
+  if (els.cycles.dataset.key !== key) {
+    els.cycles.dataset.key = key;
+    els.cycles.innerHTML = Array.from({ length: total }, (_, i) =>
+      `<span class="cycle${i < filled ? ' done' : ''}">${i < filled ? HEART : HEART_EMPTY}</span>`).join('');
   }
-  [...els.cycles.children].forEach((el, i) => el.classList.toggle('done', i < focusCount));
-  els.cycles.setAttribute('aria-label', `${Math.min(focusCount, total)} de ${total} focos concluídos`);
+  els.cycles.setAttribute('aria-label', `${filled} de ${total} focos concluídos`);
+}
+
+function renderXp(st) {
+  const progress = 1 - st.remainingMs / st.durationMs;
+  els.xp.style.setProperty('--xp', progress.toFixed(4));
+  els.xp.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
 }
 
 function render() {
@@ -103,6 +114,7 @@ function render() {
   els.toggle.dataset.state = st.running ? 'running' : 'paused';
   els.toggle.setAttribute('aria-label', st.running ? 'Pausar' : 'Iniciar');
   renderCycles(st.focusCount);
+  renderXp(st);
   const now = Date.now();
   scene.setSky(skyAtTime(now, todaySunTimes(now)));
   if (celebrating) return; // a cena termina a comemoração no modo antigo

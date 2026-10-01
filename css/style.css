@@ -2,20 +2,17 @@
   --focus: #d8604f;
   --short: #4f9d69;
   --long: #4a6fa5;
-  --ink: #12142e;
-  --text: #f4f1ff;
-  /* Painéis no estilo inventário: azul translúcido, borda escura e brilho interno claro */
-  --panel-bg: rgba(46, 62, 140, .86);
-  --panel-edge: #12142e;
-  --panel-glow: rgba(150, 172, 255, .55);
-  --slot-bg: rgba(72, 92, 180, .9);
-  --screen-shadow: 0 16px 0 rgba(0, 0, 0, .25);
-  /* Cantos em degrau (pixel) */
-  --px: 4px;
-  --notch: polygon(0 var(--px), var(--px) var(--px), var(--px) 0, calc(100% - var(--px)) 0,
-    calc(100% - var(--px)) var(--px), 100% var(--px), 100% calc(100% - var(--px)),
-    calc(100% - var(--px)) calc(100% - var(--px)), calc(100% - var(--px)) 100%, var(--px) 100%,
-    var(--px) calc(100% - var(--px)), 0 calc(100% - var(--px)));
+  --ink: #1e1e1e;
+  --text: #ffffff;
+  --text-shadow: #3f3f3f;
+  /* Botões em relevo, como nos menus dos jogos de blocos */
+  --btn: #6f6f6f;
+  --btn-hover: #7b86c4;
+  --btn-light: #aaaaaa;
+  --btn-dark: #3a3a3a;
+  /* Painel (inventário) cinza claro com bisel */
+  --panel: #c6c6c6;
+  --panel-text: #3f3f3f;
 }
 
 * { box-sizing: border-box; }
@@ -28,28 +25,22 @@ body {
 button { font: inherit; color: inherit; }
 svg[shape-rendering] { display: block; image-rendering: pixelated; }
 
-.panel {
-  background: var(--panel-bg);
-  border: 3px solid var(--panel-edge);
-  box-shadow: inset 0 0 0 2px var(--panel-glow);
-  clip-path: var(--notch);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, .45);
-}
+/* Texto branco com sombra cinza deslocada */
+.mc-btn, .time, .chat { text-shadow: .1em .1em 0 var(--text-shadow); }
 
-.slot {
+.mc-btn {
   display: grid;
   place-items: center;
-  padding: .14em;
-  background: var(--slot-bg);
-  border: 2px solid var(--panel-edge);
-  box-shadow: inset 0 0 0 2px var(--panel-glow);
-  clip-path: polygon(0 3px, 3px 3px, 3px 0, calc(100% - 3px) 0, calc(100% - 3px) 3px, 100% 3px,
-    100% calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%,
-    3px calc(100% - 3px), 0 calc(100% - 3px));
+  padding: .15em;
+  background: var(--btn);
+  border: 2px solid #000;
+  box-shadow: inset 2px 2px 0 var(--btn-light), inset -2px -3px 0 var(--btn-dark);
+  color: var(--text);
   cursor: pointer;
 }
-.slot:hover { background: rgba(98, 120, 214, .95); }
-.slot > span, .slot svg { width: 100%; height: 100%; }
+.mc-btn:hover { background: var(--btn-hover); border-color: #fff; }
+.mc-btn:active { box-shadow: inset 2px 2px 0 var(--btn-dark); }
+.mc-btn > span, .mc-btn svg { width: 100%; height: 100%; }
 
 /* Moldura na cor do modo */
 #app {
@@ -73,40 +64,50 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
 }
 
 .screen {
-  --px: clamp(6px, 1.2cqw, 14px);
   position: relative;
   aspect-ratio: 2 / 1;
-  border: clamp(6px, 1.2cqw, 14px) solid var(--panel-edge);
-  clip-path: var(--notch);
+  border: clamp(6px, 1.2cqw, 14px) solid #000;
   overflow: hidden;
-  background: #468ceb;
+  background: #78a7ff;
 }
 .scene { display: block; width: 100%; height: 100%; }
 
-/* HUD sobre o céu */
+/* HUD embaixo, sobre a terra (como no jogo): corações, barra de experiência e hotbar */
 .hud {
   position: absolute;
-  top: 2.4cqw;
+  bottom: 2cqw;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: .7cqw;
+  align-items: stretch;
+  gap: .5cqw;
   width: max-content;
   max-width: 100%;
 }
 
-.timer-bar {
+.hotbar {
   display: flex;
   align-items: center;
-  gap: .35em;
-  padding: .22em .35em;
+  gap: .25em;
+  padding: .18em;
   font-size: clamp(18px, 3.2cqw, 40px);
+  background: rgba(0, 0, 0, .45);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #8b8b8b;
 }
+.hotbar-slot {
+  display: grid;
+  place-items: center;
+  width: 1.3em;
+  height: 1.3em;
+  padding: .18em;
+  background: rgba(139, 139, 139, .35);
+  border: 2px solid #373737;
+}
+.hotbar-slot.selected { border-color: #fff; box-shadow: 0 0 0 2px #000; }
 
-.mode-icon { width: 1.3em; height: 1.3em; cursor: default; background: var(--mode); }
-.mode-icon .icon { display: none; }
+.mode-icon .icon { display: none; width: 100%; height: 100%; }
 #app[data-mode="focus"] .icon-focus,
 #app[data-mode="short"] .icon-short,
 #app[data-mode="long"] .icon-long { display: block; }
@@ -114,53 +115,68 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
 .time {
   display: inline-block;
   min-width: 3.4em;
+  padding: 0 .1em;
   font-family: "Silkscreen", "Pixelify Sans", monospace; /* dígitos mais legíveis que os da Pixelify */
   font-size: .82em;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: .04em;
   text-align: center;
 }
 
-.ctrl { width: 1.3em; height: 1.3em; padding: .2em; }
-.ctrl-skip { width: 1em; height: 1em; padding: .18em; opacity: .85; }
+.ctrl { width: 1.3em; height: 1.3em; padding: .22em; }
+.ctrl-skip { width: 1em; height: 1em; padding: .2em; }
 .ctrl:focus-visible,
-.settings-btn:focus-visible { outline: 3px solid #ffe066; outline-offset: -3px; }
+.settings-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
 .ctrl-toggle .i-pause,
 #toggle[data-state="running"] .i-play { display: none; }
 #toggle[data-state="running"] .i-pause { display: block; }
 
-/* Corações no canto, como a barra de vida: cheios = focos concluídos */
+/* Barra de experiência: enche conforme o bloco avança (--xp de 0 a 1, definido pelo app) */
+.xp {
+  position: relative;
+  height: clamp(6px, 1.1cqw, 12px);
+  background: #1b1b1b;
+  border: 2px solid #000;
+}
+.xp::after { /* divisões da barra */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(5.55% - 2px), rgba(0, 0, 0, .55) calc(5.55% - 2px) 5.55%);
+}
+.xp-fill {
+  width: calc(var(--xp, 0) * 100%);
+  height: 100%;
+  background: linear-gradient(#b4ff5a 0 40%, #6fd61e 40%);
+}
+
+/* Corações acima da barra de experiência: cheios = focos concluídos */
 .cycles {
+  display: flex;
+  gap: .15em;
+  font-size: clamp(12px, 2cqw, 24px);
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, .5));
+}
+.cycle { display: block; width: 1.1em; height: 1.1em; }
+.cycle svg { width: 100%; height: 100%; }
+
+/* Atividade: caixa de chat no canto superior esquerdo */
+.activity {
   position: absolute;
   top: 2.4cqw;
   left: 2.4cqw;
-  display: flex;
-  gap: .3em;
-  padding: .3em .55em;
-  font-size: clamp(12px, 1.8cqw, 22px);
-}
-.cycle { display: block; width: 1.1em; height: 1.1em; filter: grayscale(1) brightness(.55); transition: filter .3s steps(2); }
-.cycle svg { width: 100%; height: 100%; }
-.cycle.done { filter: none; }
-
-/* Atividade: sobre a terra, embaixo da cena (deixa o céu livre para o sol) */
-.activity {
-  position: absolute;
-  bottom: 2.6cqw;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20em;
+  width: 16em;
   max-width: calc(100vw - 32px);
-  padding: .3em 1em;
+  padding: .25em .8em;
   font: inherit;
-  font-size: clamp(14px, 1.8cqw, 22px);
-  font-weight: 600;
-  text-align: center;
+  font-size: clamp(14px, 1.7cqw, 20px);
+  text-align: left;
   color: var(--text);
+  background: rgba(0, 0, 0, .5);
+  border: 0;
 }
-.activity::placeholder { color: rgba(244, 241, 255, .7); }
-.activity:focus { outline: none; box-shadow: inset 0 0 0 2px #ffe066; }
+.activity::placeholder { color: rgba(255, 255, 255, .7); }
+.activity:focus { outline: 2px solid #a0a0a0; background: #000; }
 
 .settings-btn {
   position: absolute;
@@ -168,19 +184,22 @@ svg[shape-rendering] { display: block; image-rendering: pixelated; }
   right: 2.4cqw;
   width: clamp(34px, 4.6cqw, 56px);
   height: clamp(34px, 4.6cqw, 56px);
-  padding: 6px;
+  padding: 7px;
 }
 
-/* Painel de configurações */
-dialog {
+/* Painel de configurações: inventário cinza com bisel */
+dialog.panel {
   width: min(440px, calc(100vw - 32px));
-  padding: 24px;
-  color: var(--text);
+  padding: 22px;
+  color: var(--panel-text);
+  background: var(--panel);
+  border: 3px solid #000;
+  box-shadow: inset 3px 3px 0 #fff, inset -3px -3px 0 #555;
   font-family: inherit;
   font-size: 18px;
 }
-dialog::backdrop { background: rgba(6, 8, 24, .6); }
-dialog h2 { margin: 0 0 16px; font-weight: 700; color: #ffe066; }
+dialog::backdrop { background: rgba(0, 0, 0, .55); }
+dialog h2 { margin: 0 0 16px; font-weight: 700; }
 .field {
   display: flex;
   align-items: center;
@@ -188,31 +207,28 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; color: #ffe066; }
   gap: 12px;
   margin: 10px 0;
 }
-.field input[type="number"] {
+.field input[type="number"] { /* campo de texto: preto com borda cinza */
   width: 4.5em;
   padding: 4px 8px;
   font: inherit;
-  color: var(--text);
-  background: rgba(18, 20, 46, .6);
-  border: 2px solid var(--panel-edge);
-  box-shadow: inset 0 0 0 2px var(--panel-glow);
+  color: #fff;
+  background: #000;
+  border: 2px solid #a0a0a0;
 }
-.field input[type="checkbox"] { width: 22px; height: 22px; accent-color: #ffe066; }
-.field input[type="range"] { accent-color: #ffe066; }
+.field input[type="checkbox"] { width: 22px; height: 22px; accent-color: #4f8a2f; }
+.field input[type="range"] { accent-color: #4f8a2f; }
+.hint { margin: 4px 0 0; color: #a01010; font-size: 16px; }
 .sky-row {
   display: grid;
   gap: 6px;
   margin: 14px 0 0;
   padding-top: 12px;
-  border-top: 2px solid var(--panel-glow);
+  border-top: 2px solid #8b8b8b;
 }
-.sky-info { color: #c9d1ff; font-size: 15px; }
-.sky-row .slot { justify-self: start; padding: 6px 12px; text-shadow: 2px 2px 0 rgba(0, 0, 0, .45); }
-.hint { margin: 4px 0 0; color: #ffb3aa; font-size: 16px; }
+.sky-info { color: #555; font-size: 15px; }
+.sky-row .mc-btn { justify-self: start; padding: 6px 12px; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-.actions button { padding: 8px 16px; font-weight: 600; text-shadow: 2px 2px 0 rgba(0, 0, 0, .45); }
-.actions .primary { background: #3f8f3a; }
-.actions .primary:hover { background: #4caf3e; }
+.actions .mc-btn { padding: 8px 18px; }
 
 /* Celular: HUD sai de cima da cena e fica abaixo dela */
 @media (max-width: 640px) {
@@ -220,20 +236,16 @@ dialog h2 { margin: 0 0 16px; font-weight: 700; color: #ffe066; }
     position: static;
     transform: none;
     margin: 16px auto 0;
-    gap: 10px;
+    gap: 6px;
   }
-  .timer-bar { font-size: 26px; }
-  .cycles {
-    position: static;
-    width: max-content;
-    margin: 10px auto 0;
-    font-size: 16px;
-  }
+  .hotbar { font-size: 26px; }
+  .cycles { font-size: 18px; }
   .activity {
     position: static;
-    transform: none;
     display: block;
+    width: 20em;
     margin: 10px auto 0;
     font-size: 16px;
+    text-align: center;
   }
 }

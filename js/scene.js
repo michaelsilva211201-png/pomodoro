@@ -1,5 +1,5 @@
 import { renderScene } from './world.js';
-import { SCENE_W } from './art.js';
+import { SCENE_W, LAYOUT } from './art.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -9,14 +9,14 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 }
 
-// Moedas e estrelinhas caindo (sprites #spr-coin / #spr-star definidos em world.js).
+// Orbes de experiência e brilhos caindo (sprites #spr-orb / #spr-spark definidos em world.js).
 function spawnConfetti(layer) {
   const pieces = [];
   for (let i = 0; i < 36; i++) {
     const g = document.createElementNS(SVG_NS, 'g');
     g.setAttribute('transform', `translate(${rand(8, SCENE_W - 8).toFixed(0)} ${rand(-30, -6).toFixed(0)})`);
     const piece = document.createElementNS(SVG_NS, 'use');
-    piece.setAttribute('href', i % 3 === 0 ? '#spr-star' : '#spr-coin');
+    piece.setAttribute('href', i % 3 === 0 ? '#spr-spark' : '#spr-orb');
     piece.setAttribute('class', 'confetti-piece');
     piece.style.setProperty('--dx', `${rand(-24, 24).toFixed(0)}px`);
     piece.style.setProperty('--dur', `${rand(1, 1.5).toFixed(2)}s`);
@@ -53,11 +53,12 @@ export function createScene(root) {
       lastSky = key;
       skyTop.setAttribute('stop-color', sky.top);
       skyBottom.setAttribute('stop-color', sky.bottom);
-      // Sol 12×12: arco do horizonte esquerdo ao direito; no horizonte fica meio escondido atrás da grama.
-      // O topo do arco (y≈34) fica logo abaixo da barra do timer, acima do telhado.
-      const cx = 10 + sky.sunX * (SCENE_W - 20);
-      const cy = 124 - sky.sunHeight * 90;
-      sun.setAttribute('transform', `translate(${Math.round(cx - 6)} ${Math.round(cy - 6)})`);
+      // Sol em arco do horizonte esquerdo ao direito. A altura sobe rápido (expoente < 1) para o sol
+      // ficar no céu aberto, acima da casa, na maior parte do dia; perto do horizonte some atrás das árvores.
+      const { size, horizonY, peakY } = LAYOUT.sun;
+      const cx = size / 2 + sky.sunX * (SCENE_W - size);
+      const cy = horizonY - Math.pow(sky.sunHeight, 0.4) * (horizonY - peakY);
+      sun.setAttribute('transform', `translate(${Math.round(cx - size / 2)} ${Math.round(cy - size / 2)})`);
       sun.setAttribute('opacity', (1 - sky.night).toFixed(2));
       clouds.setAttribute('opacity', (1 - sky.night).toFixed(2));
       shade.setAttribute('opacity', (sky.night * 0.45).toFixed(2));

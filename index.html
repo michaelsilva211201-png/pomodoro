@@ -17,37 +17,38 @@
       <div class="screen">
         <!-- Cena montada por js/scene.js a partir de js/art.js -->
         <svg class="scene" viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" role="img"
-             aria-label="Casinha de madeira em pixel art com um personagem trabalhando na bancada"></svg>
+             aria-label="Casa de blocos em pixel art com um personagem trabalhando na mesa de trabalho"></svg>
 
-        <button id="open-settings" class="settings-btn slot" type="button" aria-label="Configurações">
+        <button id="open-settings" class="settings-btn mc-btn" type="button" aria-label="Configurações">
           <span data-icon="gear"></span>
         </button>
       </div>
 
       <div class="hud">
-        <div class="timer-bar panel">
-          <span class="mode-icon slot" aria-hidden="true">
+        <div id="cycles" class="cycles" role="img" aria-label="Progresso do ciclo"></div>
+        <div id="xp" class="xp" role="progressbar" aria-label="Progresso do bloco" aria-valuemin="0" aria-valuemax="100"><div class="xp-fill"></div></div>
+        <div class="timer-bar hotbar">
+          <span class="mode-icon hotbar-slot selected" aria-hidden="true">
             <span class="icon icon-focus" data-icon="pickaxe"></span>
-            <span class="icon icon-short" data-icon="mug"></span>
-            <span class="icon icon-long" data-icon="moon"></span>
+            <span class="icon icon-short" data-icon="bread"></span>
+            <span class="icon icon-long" data-icon="bed"></span>
           </span>
           <span id="time" class="time">25:00</span>
-          <button id="toggle" class="ctrl ctrl-toggle slot" type="button" data-state="paused" aria-label="Iniciar">
+          <button id="toggle" class="ctrl ctrl-toggle mc-btn" type="button" data-state="paused" aria-label="Iniciar">
             <span class="i-play" data-icon="play"></span>
             <span class="i-pause" data-icon="pause"></span>
           </button>
-          <button id="reset" class="ctrl ctrl-reset slot" type="button" aria-label="Reiniciar bloco">
+          <button id="reset" class="ctrl ctrl-reset mc-btn" type="button" aria-label="Reiniciar bloco">
             <span data-icon="stop"></span>
           </button>
-          <button id="skip" class="ctrl ctrl-skip slot" type="button" aria-label="Pular para o próximo bloco">
+          <button id="skip" class="ctrl ctrl-skip mc-btn" type="button" aria-label="Pular para o próximo bloco">
             <span data-icon="skip"></span>
           </button>
         </div>
       </div>
 
-      <div id="cycles" class="cycles panel" role="img" aria-label="Progresso do ciclo"></div>
 
-      <input id="activity" class="activity panel" type="text" maxlength="80" autocomplete="off"
+      <input id="activity" class="activity chat" type="text" maxlength="80" autocomplete="off"
              placeholder="No que você vai focar?" aria-label="Atividade">
     </div>
 
@@ -66,12 +67,12 @@
         <div class="sky-row">
           <span>Céu no horário real</span>
           <small id="sky-info" class="sky-info"></small>
-          <button id="use-location" type="button" class="slot">Usar minha localização</button>
+          <button id="use-location" type="button" class="mc-btn">Usar minha localização</button>
           <p id="location-hint" class="hint" hidden>Não foi possível obter a localização. Usando 6h–18h.</p>
         </div>
         <div class="actions">
-          <button type="submit" value="cancel" class="slot">Cancelar</button>
-          <button type="submit" value="save" class="slot primary">Salvar</button>
+          <button type="submit" value="cancel" class="mc-btn">Cancelar</button>
+          <button type="submit" value="save" class="mc-btn primary">Salvar</button>
         </div>
       </form>
     </dialog>
